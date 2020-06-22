@@ -16,16 +16,14 @@ export default function Routes() {
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Home"
-        inactiveColor="#000"
-        tabBarOptions={{
-          activeTintColor: "#0ed800",
-        }}
-        >
+        inactiveColor="#162335"
+      >
         <Tab.Screen
           name="Home"
           activeBackgroundColor="#fff"
           component={Home}
           options={{
+            tabBarColor: "#5F67EC",
             tabBarIcon: ({ color }) => (
               <Icon name="home" size={22} color={color} />
             ),
@@ -35,6 +33,7 @@ export default function Routes() {
           name="Discover"
           component={Discover}
           options={{
+            tabBarColor: "#2FA749",
             tabBarIcon: ({ color }) => (
               <Icon name="compass" size={22} color={color} />
             ),
@@ -43,10 +42,11 @@ export default function Routes() {
         <Tab.Screen
           name="Shelf"
           options={{
+            tabBarColor: "#F67161",
             tabBarLabel: "My Shelf",
             tabBarIcon: ({ color }) => (
-                <Icon name="book" size={22} color={color} />
-              ),
+              <Icon name="book" size={22} color={color} />
+            ),
           }}
           component={Shelf}
         />
@@ -54,6 +54,7 @@ export default function Routes() {
           name="Profile"
           component={Profile}
           options={{
+            tabBarColor: "#9b59b6",
             tabBarIcon: ({ color }) => (
               <Icon name="user-alt" size={22} color={color} />
             ),
