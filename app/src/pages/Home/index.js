@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import Constants from "expo-constants";
 
 import ProgressCircle from "react-native-progress-circle";
+
+import BookPreview from "../../components/BookPreview";
 
 import {
   FontAwesome5 as Icon,
@@ -30,40 +32,38 @@ import {
   SubjectTitle,
 } from "./styles";
 
-import { AppLoading } from "expo";
-
 export default Home = () => {
   const [greeting, setGreeting] = useState("");
 
   const [homeRecommendations, setHomeRecommendations] = useState(null);
   const [recentProgress, setRecentProgress] = useState(null);
+  const [modalState, setModalState] = useState(false);
 
   const subjectsArray = [
-    
     {
       name: "Romance",
       icon: "heart",
-      color: "#e6394666"
+      color: "#e6394666",
     },
     {
       name: "Mystery",
       icon: "incognito",
-      color: "#bdb2ff66"
+      color: "#bdb2ff66",
     },
     {
       name: "Sci-Fi",
       icon: "alien",
-      color: "#2fa74966"
+      color: "#2fa74966",
     },
     {
       name: "Drama",
       icon: "drama-masks",
-      color: "#ffc6ff66"
+      color: "#ffc6ff66",
     },
     {
       name: "Self-Improvement",
       icon: "tree",
-      color: "#a0c4ff66"
+      color: "#a0c4ff66",
     },
   ];
 
@@ -81,6 +81,10 @@ export default Home = () => {
       .then((res) => {
         setRecentProgress(res);
       });
+  }
+
+  function handleModal() {
+    setModalState(!modalState);
   }
 
   const isDay = () => {
@@ -102,74 +106,92 @@ export default Home = () => {
   }, []);
 
   return (
-    <Container style={{ paddingTop: Constants.statusBarHeight + 30 }}>
-      <ScreenTitle>
-        {greeting} <Text style={{ fontFamily: "Raleway_700Bold" }}>Breno</Text>
-      </ScreenTitle>
-      <Indication>Have you done your reading today?</Indication>
-      <Recommendations>
-        <SectionTitle>Recommendations</SectionTitle>
-        <RecommendationsList
+    <>
+      <Container style={{ paddingTop: Constants.statusBarHeight + 30 }}>
+        <ScreenTitle>
+          {greeting}{" "}
+          <Text style={{ fontFamily: "Raleway_700Bold" }}>Breno</Text>
+        </ScreenTitle>
+        <Indication>Have you done your reading today?</Indication>
+        <Recommendations>
+          <SectionTitle>Recommendations</SectionTitle>
+          <RecommendationsList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            {homeRecommendations ? (
+              homeRecommendations.map((work) => (
+                <BookContainer key={work.title} onPress={handleModal}>
+                  <BookCover
+                    source={{
+                      uri: `http://covers.openlibrary.org/b/id/${work.cover_id}-L.jpg`,
+                    }}
+                  />
+                  <BookAuthor>
+                    <Icon name="pencil-alt" size={10} /> {work.authors[0].name}
+                  </BookAuthor>
+                  <BookTitle>{work.title}</BookTitle>
+                </BookContainer>
+              ))
+            ) : (
+              <ActivityIndicator size="large" color="#2FA749" />
+            )}
+          </RecommendationsList>
+        </Recommendations>
+
+        <SectionTitle>Recent Progress</SectionTitle>
+        {recentProgress ? (
+          <ProgressContainer activeOpacity={0.5}>
+            <ProgressCircle
+              percent={0.3 * 100}
+              radius={50}
+              borderWidth={8}
+              color="#5F67EC"
+              shadowColor="#eee"
+              bgColor="#fff"
+            >
+              <ProgressPercentage>{"30%"}</ProgressPercentage>
+            </ProgressCircle>
+            <View>
+              <ProgressTitle>{recentProgress.title}</ProgressTitle>
+              <ProgressUpdate>Change progress</ProgressUpdate>
+            </View>
+            <ProgressBookCover
+              source={{
+                uri: `http://covers.openlibrary.org/b/id/${recentProgress.covers[0]}-M.jpg`,
+              }}
+            />
+          </ProgressContainer>
+        ) : (
+          <ActivityIndicator size="large" color="#2FA749" />
+        )}
+        <SectionTitle>Popular Subjects</SectionTitle>
+        <SubjectsContainer
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         >
-          {homeRecommendations ? (
-            homeRecommendations.map((work) => (
-              <BookContainer key={work.title}>
-                <BookCover
-                  source={{
-                    uri: `http://covers.openlibrary.org/b/id/${work.cover_id}-L.jpg`,
-                  }}
-                />
-                <BookAuthor>
-                  <Icon name="pencil-alt" size={10} /> {work.authors[0].name}
-                </BookAuthor>
-                <BookTitle>{work.title}</BookTitle>
-              </BookContainer>
+          {subjectsArray ? (
+            subjectsArray.map((subject) => (
+              <Subject
+                key={subject.name}
+                style={{ backgroundColor: subject.color }}
+              >
+                <MaterialCommunityIcons name={subject.icon} size={18} />
+                <SubjectTitle>{subject.name}</SubjectTitle>
+              </Subject>
             ))
           ) : (
-            <AppLoading />
+            <ActivityIndicator size="large" color="#2FA749" />
           )}
-        </RecommendationsList>
-      </Recommendations>
-
-      <SectionTitle>Recent Progress</SectionTitle>
-      {recentProgress && (
-        <ProgressContainer>
-          <ProgressCircle
-            percent={0.3 * 100}
-            radius={50}
-            borderWidth={8}
-            color="#5F67EC"
-            shadowColor="#eee"
-            bgColor="#fff"
-          >
-            <ProgressPercentage>{"30%"}</ProgressPercentage>
-          </ProgressCircle>
-          <View>
-            <ProgressTitle>{recentProgress.title}</ProgressTitle>
-            <ProgressUpdate>Change progress</ProgressUpdate>
-          </View>
-          <ProgressBookCover
-            source={{
-              uri: `http://covers.openlibrary.org/b/id/${recentProgress.covers[0]}-M.jpg`,
-            }}
-          />
-        </ProgressContainer>
+        </SubjectsContainer>
+      </Container>
+      {modalState && (
+        <BookPreview>
+          <TouchableOpacity onPress={handleModal}>
+            <Icon name="angle-left" size={26} />
+          </TouchableOpacity>
+        </BookPreview>
       )}
-      <SectionTitle>Popular Subjects</SectionTitle>
-      <SubjectsContainer
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        {subjectsArray &&
-          subjectsArray.map((subject) => (
-            <Subject key={subject.name} style={{ backgroundColor: subject.color}}>
-              <MaterialCommunityIcons name={subject.icon} size={18} />
-              <SubjectTitle>{subject.name}</SubjectTitle>
-            </Subject>
-          ))}
-      </SubjectsContainer>
-    </Container>
+    </>
   );
 };

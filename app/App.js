@@ -4,6 +4,7 @@ import { AppLoading } from "expo";
 import {
   Raleway_300Light,
   Raleway_400Regular,
+  Raleway_500Medium,
   Raleway_600SemiBold,
   Raleway_700Bold,
   useFonts,
@@ -15,6 +16,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     Raleway_300Light,
     Raleway_400Regular,
+    Raleway_500Medium,
     Raleway_600SemiBold,
     Raleway_700Bold
   });

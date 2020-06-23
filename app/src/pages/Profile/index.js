@@ -3,10 +3,12 @@ import { View, Text } from 'react-native';
 
 import { Container, ScreenTitle } from './styles';
 
+import BookPreview from "../../components/BookPreview";
+
 const Profile = () => {
   return (
       <Container>
-          <ScreenTitle>Hello world! Profile</ScreenTitle>
+          <BookPreview />
       </Container>
   );
 }
