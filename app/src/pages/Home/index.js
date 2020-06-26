@@ -36,6 +36,7 @@ export default Home = () => {
   const [greeting, setGreeting] = useState("");
 
   const [homeRecommendations, setHomeRecommendations] = useState(null);
+  const [openedBook, setOpenedBook] = useState(null);
   const [recentProgress, setRecentProgress] = useState(null);
   const [modalState, setModalState] = useState(false);
 
@@ -121,7 +122,10 @@ export default Home = () => {
           >
             {homeRecommendations ? (
               homeRecommendations.map((work) => (
-                <BookContainer key={work.title} onPress={handleModal}>
+                <BookContainer key={work.title} onPress={()=> {
+                  handleModal();
+                  setOpenedBook(work);
+                }}>
                   <BookCover
                     source={{
                       uri: `http://covers.openlibrary.org/b/id/${work.cover_id}-L.jpg`,
@@ -186,7 +190,7 @@ export default Home = () => {
         </SubjectsContainer>
       </Container>
       {modalState && (
-        <BookPreview>
+        <BookPreview onBackdropPress={setModalState} book={openedBook}>
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>

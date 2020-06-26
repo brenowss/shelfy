@@ -3,14 +3,14 @@ import Modal from "react-native-modal";
 
 export const Container = styled(Modal)`
   padding: 20px;
-  position: absolute;
-  left: 0;
-  bottom: 0;
   margin: 0;
+  margin-top: 20%;
   background-color: #fff;
   width: 100%;
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
+  justify-content: space-between;
+  min-height: 500px;
 `;
 
 export const Header = styled.View`
@@ -25,10 +25,11 @@ export const BookContainer = styled.View`
 export const BookTitle = styled.Text`
   font-family: Raleway_700Bold;
   font-size: 28px;
+  text-align: center;
 `;
 
 export const BookAuthor = styled.Text`
-  font-family: Raleway_700Bold;
+  font-family: Raleway_500Medium;
   font-size: 18px;
   margin-bottom: 6px;
 `;
@@ -44,6 +45,7 @@ export const BookCover = styled.Image`
 export const BookSubjects = styled.View`
   flex-direction: row;
   width: 100%;
+  flex-wrap: wrap;
   justify-content: center;
 `;
 
@@ -58,20 +60,21 @@ export const Title = styled.Text`
   font-family: Raleway_700Bold;
   font-size: 20px;
   align-self: flex-start;
-  margin-top: 6px;
+  margin: 6px 0;
 `;
 
-export const BookDescription = styled.Text`
-  font-family: Raleway_500Medium;
-  margin: 12px 0;
-  color: #666;
-  text-align: justify;
+export const BookDescription = styled.ScrollView`
+  height: 200px;
+  margin-bottom: 15px;
 `;
 
 export const Actions = styled.View`
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
+  left: 20px;
   align-items: center;
+  position: absolute;
+  bottom: 0;
 `;
 
 export const AddShelf = styled.TouchableOpacity`
