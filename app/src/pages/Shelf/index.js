@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-// import { Container } from './styles';
+import { Container, ScreenTitle } from './styles';
 
 const Shelf = () => {
   return (
-      <View>
-          <Text>Hello world! Shelf</Text>
-      </View>
+      <Container>
+          <ScreenTitle>Shelf</ScreenTitle>
+      </Container>
   );
 }
 

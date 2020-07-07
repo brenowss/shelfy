@@ -62,6 +62,11 @@ export default Home = () => {
       color: "#ffc6ff66",
     },
     {
+      name: "Fantasy",
+      icon: "sword",
+      color: "#f25f4c66",
+    },
+    {
       name: "Self-Improvement",
       icon: "tree",
       color: "#a0c4ff66",
@@ -108,10 +113,10 @@ export default Home = () => {
 
   return (
     <>
-      <Container style={{ paddingTop: Constants.statusBarHeight + 30 }}>
+      <Container>
         <ScreenTitle>
           {greeting}{" "}
-          <Text style={{ fontFamily: "Raleway_700Bold" }}>Breno</Text>
+          <Text style={{ fontFamily: "GothamBold" }}>Breno</Text>
         </ScreenTitle>
         <Indication>Have you done your reading today?</Indication>
         <Recommendations>

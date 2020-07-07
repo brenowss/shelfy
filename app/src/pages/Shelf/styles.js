@@ -5,6 +5,7 @@ export const Container = styled.View`
 `;
 
 export const ScreenTitle = styled.Text`
-  font-family: Raleway_700Bold;
-  font-size: 36px;
+  font-family: GothamBold;
+  font-size: 32px;
+  color: #00214d;
 `;

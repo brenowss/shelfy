@@ -42,11 +42,9 @@ export const BookCover = styled.Image`
   resize-mode: stretch;
 `;
 
-export const BookSubjects = styled.View`
+export const BookSubjects = styled.ScrollView`
   flex-direction: row;
   width: 100%;
-  flex-wrap: wrap;
-  justify-content: center;
 `;
 
 export const BookSubject = styled.TouchableOpacity`

@@ -1,23 +1,34 @@
 import styled from "styled-components/native";
 
-export const Container = styled.View`
+export const Container = styled.ScrollView`
   padding: 50px 12px 0;
 `;
 
 export const ScreenTitle = styled.Text`
-  font-family: Raleway_700Bold;
+  font-family: GothamBold;
   font-size: 32px;
-  color: #162335;
+  color: #00214d;
 `;
 
 export const Indication = styled.Text`
-  font-family: Raleway_600SemiBold;
+  font-family: GothamLight;
   color: #666;
-  margin: 10px 0 20px 0;
+  margin: 10px 0 12px 0;
 `;
-
-export const CarouselContainer = styled.View`
+export const SearchBar = styled.View`
   width: 100%;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 15px;
+  background-color: #eee;
+  border-radius: 22px;
+  margin-bottom: 12px;
+`;
+export const SearchInput = styled.TextInput`
+  width: 100%;
+  margin-left: 10px;
+  font-family: GothamMedium;
+  text-decoration: none;
 `;
 
 export const CardContainer = styled.View`
@@ -28,55 +39,49 @@ export const CardBanner = styled.TouchableOpacity`
   height: 190px;
   flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 5px 15px;
+  justify-content: space-between;
+  padding: 5px 20px;
   border-radius: 4px;
-  margin-bottom: 8px;
-`;
-
-export const BookSubject = styled.Text`
-  font-family: Raleway_700Bold;
-  color: #fff;
-  font-size: 30px;
-  max-width: 50%;
-  text-align: center;
-  text-transform: capitalize;
+  margin-bottom: 12px;
 `;
 
 export const BookCover = styled.Image`
   height: 170px;
-  width: 130px;
+  width: 38%;
   border-radius: 1px;
   resize-mode: stretch;
 `;
 
-export const CardInfo = styled.View`
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-between;
-`;
-
 export const BookTitle = styled.Text`
-  font-family: Raleway_700Bold;
-  color: #162335;
+  font-family: GothamBold;
+  color: #1b2d45;
   font-size: 22px;
-  max-width: 250px;
+  max-width: 62%;
+  margin-bottom: 15px;
 `;
 
 export const BookAuthor = styled.Text`
-  font-family: Raleway_600SemiBold;
-  color: #777;
+  font-family: GothamMedium;
+  color: #1b2d45;
   align-items: center;
 `;
 
-export const ViewButton = styled.TouchableOpacity`
-  background-color: #2979FF; 
-  padding: 10px 30px;
-  border-radius: 8px;
+export const Subjects = styled.View`
+  justify-content: center;
+  margin-bottom: 50px;
+  width: 100%;
 `;
 
-export const ViewButtonText = styled.Text`
-  font-family: Raleway_600SemiBold;
-  color: #fff;
-  font-size: 18px;
+export const SubjectRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Subject = styled.TouchableOpacity`
+  justify-content: center;
+  height: 120px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  align-items: center;
 `;

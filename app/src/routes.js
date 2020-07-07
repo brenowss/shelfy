@@ -13,7 +13,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 export default function Routes() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={{ colors: { background: '#fffffe'}}}>
       <Tab.Navigator
         initialRouteName="Home"
         inactiveColor="#162335"
@@ -33,7 +33,7 @@ export default function Routes() {
           name="Discover"
           component={Discover}
           options={{
-            tabBarColor: "#2FA749",
+            tabBarColor: "#17d36c",
             tabBarIcon: ({ color }) => (
               <Icon name="compass" size={22} color={color} />
             ),

@@ -1,28 +1,23 @@
 import React from "react";
 import { AppLoading } from "expo";
 
-import {
-  Raleway_300Light,
-  Raleway_400Regular,
-  Raleway_500Medium,
-  Raleway_600SemiBold,
-  Raleway_700Bold,
-  useFonts,
-} from "@expo-google-fonts/raleway";
+import { useFonts } from '@use-expo/font';
 
 import Routes from "./src/routes";
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    Raleway_300Light,
-    Raleway_400Regular,
-    Raleway_500Medium,
-    Raleway_600SemiBold,
-    Raleway_700Bold
+  let [fontsLoaded] = useFonts({
+    'GothamThin': require('./assets/fonts/GothamThin.otf'),
+    'GothamLight': require('./assets/fonts/GothamLight.ttf'),
+    'GothamMedium': require('./assets/fonts/GothamMedium.ttf'),
+    'GothamBold': require('./assets/fonts/GothamBold.ttf'),
   });
 
   if (!fontsLoaded) {
     return <AppLoading />;
+  } else {
+  return (
+    <Routes />
+  );
   }
-  return <Routes />;
 }

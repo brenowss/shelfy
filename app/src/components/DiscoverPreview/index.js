@@ -21,28 +21,9 @@ import {
   WebSearch,
 } from "./styles";
 
-const BookPreview = (props) => {
-  const [bookDescription, setBookDescription] = useState();
-
+const DiscoverPreview = (props) => {
   function handleModal() {
     props.onBackdropPress(false);
-  }
-
-  function getBookDescription() {
-    const book_olid = props.book.key.replace("/works/", "");
-    fetch(`https://openlibrary.org/works/${book_olid}.json`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (typeof res.description === "object" && res.description !== null) {
-          setBookDescription(res.description.value);
-        }
-        if (typeof res.description === "string") {
-          setBookDescription(res.description);
-        }
-        if (res.description === null) {
-          setBookDescription(null);
-        }
-      });
   }
 
   function handleGoogleSearch(title, author) {
@@ -59,31 +40,28 @@ const BookPreview = (props) => {
       <BookContainer>
         <BookCover
           source={{
-            uri: `http://covers.openlibrary.org/b/id/${props.book.cover_id}-L.jpg`,
+            uri: props.book.cover_url,
           }}
         />
         <BookTitle>{props.book.title}</BookTitle>
-        <BookAuthor>{props.book.authors[0].name}</BookAuthor>
+        <BookAuthor>{props.book.author}</BookAuthor>
         <BookSubjects horizontal={true} showsHorizontalScrollIndicator={false}>
-          {
-            (props.book.subject && getBookDescription(),
-            props.book.subject.slice(0, 3).map((subject) => (
-              <BookSubject key={subject}>
-                <Text
-                  style={{
-                    fontFamily: "GothamThin",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {subject}
-                </Text>
-              </BookSubject>
-            )))
-          }
+          {props.book.subjects.slice(0, 3).map((subject) => (
+            <BookSubject key={subject}>
+              <Text
+                style={{
+                  fontFamily: "GothamThin",
+                  textTransform: "capitalize",
+                }}
+              >
+                {subject}
+              </Text>
+            </BookSubject>
+          ))}
         </BookSubjects>
         <Title>Description:</Title>
         <BookDescription>
-          {bookDescription && (
+          {props.book.description && (
             <Text
               style={{
                 fontFamily: "GothamLight",
@@ -92,10 +70,10 @@ const BookPreview = (props) => {
                 textAlign: "justify",
               }}
             >
-              {bookDescription}
+              {props.book.description}
             </Text>
           )}
-          {bookDescription === null && (
+          {props.book.description === null && (
             <Text
               style={{
                 fontFamily: "GothamLight",
@@ -116,12 +94,12 @@ const BookPreview = (props) => {
         </AddShelf>
         <WebSearch
           onPress={() => {
-            handleGoogleSearch(props.book.title, props.book.authors[0].name);
+            handleGoogleSearch(props.book.title, props.book.author);
           }}
         >
           <Text
             style={{
-              fontFamily: "GothamBold",
+              fontFamily: "GothamMedium",
               fontSize: 16,
               color: "#fff",
             }}
@@ -134,4 +112,4 @@ const BookPreview = (props) => {
   );
 };
 
-export default BookPreview;
+export default DiscoverPreview;

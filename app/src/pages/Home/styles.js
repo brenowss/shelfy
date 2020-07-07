@@ -1,19 +1,18 @@
 import styled from "styled-components/native";
 
-export const Container = styled.View`
-  padding: 0 15px 0;
-  background-color: #eee;
+export const Container = styled.ScrollView`
+  padding: 50px 12px 0;
   height: 100%;
 `;
 
 export const ScreenTitle = styled.Text`
-  font-family: Raleway_400Regular;
+  font-family: GothamLight;
   font-size: 32px;
-  color: #162335;
+  color: #00214d;
 `;
 
 export const Indication = styled.Text`
-  font-family: Raleway_600SemiBold;
+  font-family: GothamLight;
   color: #666;
   margin: 10px 0 20px 0;
 `;
@@ -29,7 +28,7 @@ export const RecommendationsList = styled.ScrollView`
 `;
 
 export const SectionTitle = styled.Text`
-  font-family: Raleway_600SemiBold;
+  font-family: GothamMedium;
   color: #333;
   font-size: 20px;
   margin-bottom: 10px;
@@ -49,12 +48,12 @@ export const BookCover = styled.Image`
 export const BookAuthor = styled.Text`
   color: #666;
   margin: 5px 0;
-  font-family: Raleway_400Regular;
+  font-family: GothamThin;
   font-size: 12px;
 `;
 
 export const BookTitle = styled.Text`
-  font-family: Raleway_700Bold;
+  font-family: GothamBold;
   font-size: 16px;
 `;
 
@@ -72,19 +71,19 @@ export const ProgressContainer = styled.TouchableOpacity`
 `;
 
 export const ProgressTitle = styled.Text`
-  font-family: Raleway_700Bold;
+  font-family: GothamBold;
   font-size: 18px;
   color: #162335;
 `;
 
 export const ProgressPercentage = styled.Text`
-  font-family: Raleway_600SemiBold;
+  font-family: GothamMedium;
   font-size: 22px;
   color: #162335;
 `;
 
 export const ProgressUpdate = styled.Text`
-  font-family: Raleway_400Regular;
+  font-family: GothamThin;
 `;
 
 export const ProgressBookCover = styled.Image`
@@ -110,7 +109,7 @@ export const Subject = styled.TouchableOpacity`
 `;
 
 export const SubjectTitle = styled.Text`
-  font-family: Raleway_600SemiBold;
+  font-family: GothamMedium;
   color: #162335;
   margin-left: 3px;
 `;

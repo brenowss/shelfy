@@ -1,81 +1,206 @@
 import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
-import Constants from "expo-constants";
+import {
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 
-import { getSubjectColor, getMainSubject } from "../../utils/subjectsFactory";
+import api from "../../services/api";
+import {
+  getSubjectColor,
+  getMainSubject,
+} from "../../services/subjectsFactory";
 
+import DiscoverPreview from "../../components/DiscoverPreview";
 import {
   Container,
   ScreenTitle,
   Indication,
+  SearchBar,
+  SearchInput,
   CardContainer,
   CardBanner,
-  BookSubject,
   BookCover,
-  CardInfo,
   BookTitle,
   BookAuthor,
-  ViewButton,
-  ViewButtonText,
+  Subject,
+  SubjectRow,
+  Subjects,
 } from "./styles";
 
 const Discover = () => {
+  const [modalState, setModalState] = useState(false);
   const [discover, setDiscover] = useState(null);
+  const [openedBook, setOpenedBook] = useState(null);
 
-  function getDiscover() {
-    fetch(`https://openlibrary.org/works/OL16637768W.json`)
-      .then((res) => res.json())
-      .then((res) => {
-        setDiscover(res);
-      });
+  function handleModal() {
+    setModalState(!modalState);
+  }
+
+  async function getDiscover() {
+    const { data } = await api.get("/discover");
+    const subjects = data[0].book_subjects && data[0].book_subjects.split(", ");
+
+    setDiscover({
+      id: data[0].id,
+      title: data[0].book_title,
+      cover_url: data[0].book_cover_url,
+      description: data[0].book_description,
+      subjects,
+      author: data[0].book_author,
+    });
   }
   useEffect(() => {
     getDiscover();
   }, []);
 
+  const subjectsArray = [
+    {
+      name: "Romance",
+      icon: "heart",
+      color: "#e63946",
+    },
+    {
+      name: "Mystery",
+      icon: "incognito",
+      color: "#bdb2ff",
+    },
+    {
+      name: "Sci-Fi",
+      icon: "alien",
+      color: "#2fa749",
+    },
+    {
+      name: "Drama",
+      icon: "drama-masks",
+      color: "#ffc6ff",
+    },
+    {
+      name: "Fantasy",
+      icon: "sword",
+      color: "#f25f4c",
+    },
+    {
+      name: "Self-Improvement",
+      icon: "tree",
+      color: "#a0c4ff",
+    },
+  ];
+
   return (
-    <Container style={{ paddingTop: Constants.statusBarHeight + 30 }}>
-      <ScreenTitle>Discover</ScreenTitle>
-      <Indication>Find new books that match your taste</Indication>
-      {discover ? (
-        <CardContainer>
-          <CardBanner
-            style={{ backgroundColor: getSubjectColor(discover.subjects) }}
-            activeOpacity={0.7}
-          >
-            <BookSubject>{getMainSubject(discover.subjects)}</BookSubject>
-            <BookCover
-              source={{
-                uri: `http://covers.openlibrary.org/b/id/${discover.covers[0]}-L.jpg`,
+    <>
+      <Container>
+        <ScreenTitle>Discover</ScreenTitle>
+        <Indication>Find new books that match your taste</Indication>
+        <SearchBar>
+          <Icon name="search" size={16} />
+          <SearchInput
+            returnKeyType="search"
+            placeholder="Search"
+            placeholderTextColor="#555"
+          />
+        </SearchBar>
+        {discover ? (
+          <CardContainer>
+            <CardBanner
+              style={{
+                backgroundColor: discover.subjects
+                  ? getSubjectColor(discover.subjects)
+                  : "#a0c4ff99",
               }}
-            />
-          </CardBanner>
-          <CardInfo>
-            <View>
-              <BookTitle>{discover.title}</BookTitle>
-              <BookAuthor>
-                <Icon name="pencil-alt" size={10} />{" "}
-                {discover.authors[0].name
-                  ? discover.authors[0].name
-                  : "Unknown writer"}
-              </BookAuthor>
-            </View>
-            <ViewButton
+              activeOpacity={0.7}
               onPress={() => {
-                console.log(discover.subjects);
+                handleModal();
+                setOpenedBook(discover);
               }}
             >
-              <ViewButtonText>View</ViewButtonText>
-            </ViewButton>
-          </CardInfo>
-        </CardContainer>
-      ) : (
-        <ActivityIndicator size="large" color="#2FA749" />
+              <View>
+                <BookTitle>{discover.title}</BookTitle>
+                <BookAuthor>
+                  <Icon name="pencil-alt" size={10} />{" "}
+                  {discover.author ? discover.author : "Unknown writer"}
+                </BookAuthor>
+              </View>
+              <BookCover
+                source={{
+                  uri: discover.cover_url,
+                }}
+              />
+            </CardBanner>
+          </CardContainer>
+        ) : (
+          <ActivityIndicator size="large" color="#2FA749" />
+        )}
+        <Subjects>
+          <SubjectRow>
+            {subjectsArray &&
+              subjectsArray.slice(0, 2).map((subject) => (
+                <Subject
+                  key={subject.name}
+                  style={{
+                    width: Dimensions.get("window").width * 0.46,
+                  }}
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0.7, y: 0 }}
+                    colors={["#111111aa", `${subject.color}`]}
+                    style={{ height: "100%", width: "100%", borderRadius: 8 }}
+                  ></LinearGradient>
+                </Subject>
+              ))}
+          </SubjectRow>
+          <SubjectRow>
+            {subjectsArray &&
+              subjectsArray.slice(2, 4).map((subject) => (
+                <Subject
+                  key={subject.name}
+                  style={{
+                    width: Dimensions.get("window").width * 0.46,
+                  }}
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0.7, y: 0 }}
+                    colors={["#111111aa", `${subject.color}`]}
+                    style={{ height: "100%", width: "100%", borderRadius: 8 }}
+                  ></LinearGradient>
+                </Subject>
+              ))}
+          </SubjectRow>
+          <SubjectRow>
+            {subjectsArray &&
+              subjectsArray.slice(4, 6).map((subject) => (
+                <Subject
+                  key={subject.name}
+                  style={{
+                    width: Dimensions.get("window").width * 0.46,
+                  }}
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0.7, y: 0 }}
+                    colors={["#111111aa", `${subject.color}`]}
+                    style={{ height: "100%", width: "100%", borderRadius: 8 }}
+                  ></LinearGradient>
+                </Subject>
+              ))}
+          </SubjectRow>
+        </Subjects>
+      </Container>
+      {modalState && (
+        <DiscoverPreview onBackdropPress={setModalState} book={openedBook}>
+          <TouchableOpacity onPress={handleModal}>
+            <Icon name="angle-left" size={26} />
+          </TouchableOpacity>
+        </DiscoverPreview>
       )}
-    </Container>
+    </>
   );
 };
-
+width: Dimensions.get("window").width * 0.46;
 export default Discover;

@@ -1,10 +1,11 @@
 const express = require("express");
-
+const routes = require('./routes')
 const getTop3Sellers = require('./functions/getTop3Sellers');
 
 const app = express();
 
 app.use(express.json());
+app.use(routes);
 
 app.listen(3333);
 
