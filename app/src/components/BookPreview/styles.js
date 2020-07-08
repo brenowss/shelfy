@@ -64,7 +64,7 @@ export const Title = styled.Text`
 `;
 
 export const BookDescription = styled.ScrollView`
-  height: 200px;
+  height: 220px;
   margin-bottom: 15px;
 `;
 
@@ -74,6 +74,7 @@ export const Actions = styled.View`
   left: 20px;
   align-items: center;
   position: absolute;
+  width: 100%;
   bottom: 0;
 `;
 

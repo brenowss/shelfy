@@ -4,17 +4,16 @@ const connection = require("../database/connection");
 module.exports = {
   async getTopSellers() {
     const top3 = [];
-    const highlightDay = "2020-06-21";
+    const highlightDay = "2020-06-28";
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false});
     const page = await browser.newPage();
     await page.goto(
       `https://www.amazon.com/charts/${highlightDay}/mostsold/fiction?ref=chrt_bk_nav_fwd`
     );
 
-    for (let i = 1; i <= 3; i++) {
       const [book] = await page.$x(
-        `//*[@id="rank${i}"]/div[1]/div[2]/div/a[1]`
+        `//*[@id="rank1"]/div[1]/div[2]/div/a[1]`
       );
       const bookURL = await book.getProperty("href");
       const newURL = await bookURL.jsonValue();
@@ -28,26 +27,28 @@ module.exports = {
       const [bookTitle] = await page.$x('//*[@id="productTitle"]');
       const book_title = await bookTitle.getProperty("innerText");
       const untreatedTitle = await book_title.jsonValue();
-      const untrimmedTitle = untreatedTitle.replace(/ *\([^)]*\) */g, ""); // remove the parenthesis and the content inside it, like '(A Hunger Games Novel)'
+      const untrimmedTitle = untreatedTitle.replace(/ *\([^)]*\)|[^:]*$|[:] */g, ""); // remove the parenthesis and the content inside it, like '(A Hunger Games Novel)'
       const title = await untrimmedTitle.trim();
 
       const OLID = await (async function getBookOLID(title) {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: false});
         const page = await browser.newPage();
         const treatedTitle = title.replace(/ /, "+");
         await page.goto(
           `https://openlibrary.org/search?q=title%3A+%22${treatedTitle}%22&mode=everything`
         );
 
-        await page.waitFor("#siteSearch");
+        await page.waitFor("#contentBody");
 
-        const [OLBook] = await page.$x('//*[@id="siteSearch"]/li[1]/span[1]/a');
+        const [OLBook] = await page.$x('//*[@id="siteSearch"]/li[1]/span[2]/span[1]/h3/a');
         const OLBookSRC = await OLBook.getProperty("href");
         const OLBookURL = await OLBookSRC.jsonValue();
 
-        let OLID = OLBookURL.replace("https://openlibrary.org/works/", "");
+        let OLID = OLBookURL.replace("https://openlibrary.org/works/" && "?edition=", "");
 
         await browser.close();
+
+        console.log(OLID)
 
         return OLID;
       })(title);
@@ -80,7 +81,7 @@ module.exports = {
         description,
         subjects,
         author,
-        position: i,
+        position: 1,
         OLID,
         highlighted_at: highlightDay,
       };
@@ -92,13 +93,12 @@ module.exports = {
         book_cover_url: url,
         book_description: description,
         book_subjects: subjects,
-        position: i,
+        position: 1,
         book_author: author,
         book_highlighted_at: highlightDay,
       });
 
       await page.goBack();
-    }
     console.log(top3);
 
     browser.close();

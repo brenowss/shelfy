@@ -99,7 +99,7 @@ export default Home = () => {
       setGreeting("Good morning,");
     }
     if (hour >= 12 && hour < 18) {
-      setGreeting("Good afternoon,");
+      setGreeting("Welcome,");
     }
     if (hour >= 18 && hour < 24) {
       setGreeting("Good night,");

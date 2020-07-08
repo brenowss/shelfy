@@ -80,8 +80,26 @@ export const SubjectRow = styled.View`
 
 export const Subject = styled.TouchableOpacity`
   justify-content: center;
-  height: 120px;
+  height: 100px;
   margin-bottom: 10px;
-  border-radius: 8px;
+  border-radius: 12px;
   align-items: center;
+  flex-direction: row;
+`;
+
+export const SubjectTitle = styled.Text`
+  margin: 20px 0 0 15px;
+  font-family: GothamBold;
+  color: #fff;
+  position: absolute;
+  z-index: 9;
+  font-size: 16px;
+`;
+export const SubjectCover = styled.Image`
+  width: 75px;
+  height: 65px;
+  resize-mode: contain;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 `;

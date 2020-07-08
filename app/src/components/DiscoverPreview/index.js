@@ -46,7 +46,7 @@ const DiscoverPreview = (props) => {
         <BookTitle>{props.book.title}</BookTitle>
         <BookAuthor>{props.book.author}</BookAuthor>
         <BookSubjects horizontal={true} showsHorizontalScrollIndicator={false}>
-          {props.book.subjects.slice(0, 3).map((subject) => (
+          {props.book.subjects ? props.book.subjects.slice(0, 3).map((subject) => (
             <BookSubject key={subject}>
               <Text
                 style={{
@@ -57,7 +57,19 @@ const DiscoverPreview = (props) => {
                 {subject}
               </Text>
             </BookSubject>
-          ))}
+          ))
+          :
+          (<BookSubject>
+              <Text
+                style={{
+                  fontFamily: "GothamThin",
+                  textTransform: "capitalize",
+                }}
+              >
+                Literature
+              </Text>
+            </BookSubject>)
+          }
         </BookSubjects>
         <Title>Description:</Title>
         <BookDescription>

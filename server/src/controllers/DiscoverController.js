@@ -5,6 +5,7 @@ module.exports= {
         const discover = await connection('discover')
         .select("*")
         .limit(1)
+        .orderBy("id", 'desc')
 
         return res.json(discover);
     }

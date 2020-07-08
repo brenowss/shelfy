@@ -72,6 +72,7 @@ export const Actions = styled.View`
   left: 20px;
   align-items: center;
   position: absolute;
+  width: 100%;
   bottom: 0;
 `;
 

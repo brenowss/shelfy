@@ -48,7 +48,7 @@ export const BookCover = styled.Image`
 export const BookAuthor = styled.Text`
   color: #666;
   margin: 5px 0;
-  font-family: GothamThin;
+  font-family: GothamLight;
   font-size: 12px;
 `;
 
