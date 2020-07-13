@@ -35,43 +35,54 @@ const DiscoverPreview = (props) => {
     );
   }
 
-
   return (
     <Container isVisible={true} onBackButtonPress={handleModal}>
       <Header>{props.children}</Header>
       <BookContainer>
         <BookCover
           source={{
-            uri: props.book.volumeInfo.imageLinks
-              && props.book.volumeInfo.imageLinks.thumbnail
+            uri: props.book.cover_url,
           }}
         />
-        <BookTitle>{props.book.volumeInfo.title}</BookTitle>
-        <BookAuthor>
-          {props.book.volumeInfo.authors[0]}
-        </BookAuthor>
+        <BookTitle>{props.book.title}</BookTitle>
+        <BookAuthor>{props.book.author}</BookAuthor>
         <BookSubject>
-            <Text
-              style={{
-                fontFamily: "GothamThin",
-                textTransform: "capitalize",
-              }}
-            >
-              {props.book.volumeInfo.categories[0]}
-            </Text>
-          </BookSubject>
-        <Title>Description:</Title>
-        <BookDescription>
           <Text
             style={{
-              fontFamily: "GothamLight",
-              marginVertical: 12,
-              color: "#666",
-              textAlign: "justify",
+              fontFamily: "GothamThin",
+              textTransform: "capitalize",
             }}
           >
-            {props.book.volumeInfo.description ? props.book.volumeInfo.description : "We couldn't find any description for this book. Try again later."}
+            {props.book.book_subject}
           </Text>
+        </BookSubject>
+        <Title>Description:</Title>
+        <BookDescription>
+          {props.book.description && (
+            <Text
+              style={{
+                fontFamily: "GothamLight",
+                marginVertical: 12,
+                color: "#666",
+                textAlign: "justify",
+              }}
+            >
+              {props.book.description}
+            </Text>
+          )}
+          {props.book.description === null && (
+            <Text
+              style={{
+                fontFamily: "GothamLight",
+                marginVertical: 12,
+                fontSize: 22,
+                color: "#666",
+                textAlign: "justify",
+              }}
+            >
+              We couldn't find any description for this book. Try again later.
+            </Text>
+          )}
         </BookDescription>
       </BookContainer>
       <Actions>
@@ -80,7 +91,7 @@ const DiscoverPreview = (props) => {
         </AddShelf>
         <WebSearch
           onPress={() => {
-            handleGoogleSearch(props.book.volumeInfo.title, props.book.volumeInfo.authors[0]);
+            handleGoogleSearch(props.book.title, props.book.author);
           }}
         >
           <Text

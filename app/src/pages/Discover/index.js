@@ -18,6 +18,7 @@ import {
   getMainSubject,
 } from "../../services/subjectsFactory";
 
+import BookPreview from "../../components/BookPreview";
 import DiscoverPreview from "../../components/DiscoverPreview";
 import SubjectView from "../../components/SubjectView";
 import {
@@ -45,6 +46,7 @@ const Discover = () => {
   const [openedBook, setOpenedBook] = useState(null);
   const [subjects, setSubjects] = useState(null);
   const [activeSubject, setActiveSubject] = useState(null);
+  const [previewType, setPreviewType] = useState("");
 
   const route = useRoute();
 
@@ -63,14 +65,13 @@ const Discover = () => {
 
   async function getDiscover() {
     const { data } = await api.get("/discover/highlight");
-    const subjects = data[0].book_subjects && data[0].book_subjects.split(", ");
 
     setDiscover({
       id: data[0].id,
       title: data[0].book_title,
       cover_url: data[0].book_cover_url,
       description: data[0].book_description,
-      subjects,
+      subject: data[0].book_subjects,
       position: data[0].position,
       author: data[0].book_author,
     });
@@ -114,6 +115,7 @@ const Discover = () => {
                 onPress={() => {
                   handleModal();
                   setOpenedBook(discover);
+                  setPreviewType("discover");
                 }}
               >
                 <View>
@@ -141,7 +143,7 @@ const Discover = () => {
                 width: Dimensions.get("window").width * 0.46,
               }}
               onPress={() => {
-                setActiveSubject(subject);
+                // make function
               }}
             >
               <LinearGradient
@@ -164,7 +166,7 @@ const Discover = () => {
                 width: Dimensions.get("window").width * 0.46,
               }}
               onPress={() => {
-                setActiveSubject(subject);
+                // make function
               }}
             >
               <LinearGradient
@@ -199,6 +201,7 @@ const Discover = () => {
                     }}
                     onPress={() => {
                       setActiveSubject(subject);
+                      setPreviewType("");
                     }}
                   >
                     <LinearGradient
@@ -230,6 +233,7 @@ const Discover = () => {
                   }}
                   onPress={() => {
                     setActiveSubject(subject);
+                    setPreviewType("");
                   }}
                 >
                   <LinearGradient
@@ -249,6 +253,7 @@ const Discover = () => {
                 </DiscoverCard>
               ))}
           </DiscoverSection>
+          <View style={{ height: 45, width: "100%" }} />
         </Container>
       ) : (
         <SubjectView
@@ -265,13 +270,23 @@ const Discover = () => {
           </TouchableOpacity>
         </SubjectView>
       )}
-      {modalState && (
-        <DiscoverPreview onBackPress={setModalState} book={openedBook}>
+      {modalState && previewType === "discover" && (
+        <DiscoverPreview
+          onBackPress={setModalState}
+          book={openedBook}
+          subject={activeSubject}
+        >
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>
         </DiscoverPreview>
-      )}
+      ) }
+        {modalState && previewType !== "discover" && (
+        <BookPreview onBackPress={setModalState} book={openedBook}>
+          <TouchableOpacity onPress={handleModal}>
+            <Icon name="angle-left" size={26} />
+          </TouchableOpacity>
+        </BookPreview>)}
     </>
   );
 };

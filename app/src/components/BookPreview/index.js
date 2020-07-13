@@ -22,7 +22,7 @@ import {
 
 const BookPreview = (props) => {
   function handleModal() {
-    props.onBackdropPress(false);
+    props.onBackPress(false);
   }
 
   function handleGoogleSearch(title, author) {

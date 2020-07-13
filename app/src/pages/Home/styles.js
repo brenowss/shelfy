@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 export const Container = styled.ScrollView`
   padding: 50px 12px 0;
   height: 100%;
+  flex: 1;
 `;
 
 export const ScreenTitle = styled.Text`
@@ -17,13 +18,12 @@ export const Indication = styled.Text`
   margin: 10px 0 20px 0;
 `;
 
-export const Recommendations = styled.View`
+export const ListContainer = styled.View`
   flex-direction: column;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 `;
 
 export const RecommendationsList = styled.ScrollView`
-  padding: 5px 0;
   margin-right: -15px;
 `;
 
@@ -31,7 +31,7 @@ export const SectionTitle = styled.Text`
   font-family: GothamMedium;
   color: #333;
   font-size: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 `;
 
 export const BookContainer = styled.TouchableOpacity`

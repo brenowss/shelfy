@@ -2,7 +2,7 @@
 exports.up = (knex) => {
     return knex.schema.createTable('amazon_week_highlight', (table) => {
       table.increments('id');
-      table.string('book_olid').notNullable();
+      table.string('book_google_id').notNullable();
       table.string('book_title').notNullable();
       table.string('book_cover_url').notNullable();
       table.text('book_description').notNullable();
