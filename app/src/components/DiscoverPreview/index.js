@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text } from "react-native";
 
 import * as WebBrowser from "expo-web-browser";
@@ -12,7 +12,6 @@ import {
   Header,
   BookContainer,
   BookCover,
-  BookSubjects,
   BookSubject,
   Title,
   BookDescription,
@@ -23,16 +22,19 @@ import {
 
 const DiscoverPreview = (props) => {
   function handleModal() {
-    props.onBackdropPress(false);
+    props.onBackPress(false);
   }
 
   function handleGoogleSearch(title, author) {
     const book_title = title.replace(/ /, "+");
-    const book_author = author.replace(/ /, "+");
+    const book_author = book_author && author.replace(/ /, "+");
     WebBrowser.openBrowserAsync(
-      `https://www.google.com/search?q=${book_title}+by+${book_author}`
+      book_author
+        ? `https://www.google.com/search?q=${book_title}+by+${book_author}`
+        : `https://www.google.com/search?q=${book_title}`
     );
   }
+
 
   return (
     <Container isVisible={true} onBackButtonPress={handleModal}>
@@ -40,64 +42,36 @@ const DiscoverPreview = (props) => {
       <BookContainer>
         <BookCover
           source={{
-            uri: props.book.cover_url,
+            uri: props.book.volumeInfo.imageLinks
+              && props.book.volumeInfo.imageLinks.thumbnail
           }}
         />
-        <BookTitle>{props.book.title}</BookTitle>
-        <BookAuthor>{props.book.author}</BookAuthor>
-        <BookSubjects horizontal={true} showsHorizontalScrollIndicator={false}>
-          {props.book.subjects ? props.book.subjects.slice(0, 3).map((subject) => (
-            <BookSubject key={subject}>
-              <Text
-                style={{
-                  fontFamily: "GothamThin",
-                  textTransform: "capitalize",
-                }}
-              >
-                {subject}
-              </Text>
-            </BookSubject>
-          ))
-          :
-          (<BookSubject>
-              <Text
-                style={{
-                  fontFamily: "GothamThin",
-                  textTransform: "capitalize",
-                }}
-              >
-                Literature
-              </Text>
-            </BookSubject>)
-          }
-        </BookSubjects>
+        <BookTitle>{props.book.volumeInfo.title}</BookTitle>
+        <BookAuthor>
+          {props.book.volumeInfo.authors[0]}
+        </BookAuthor>
+        <BookSubject>
+            <Text
+              style={{
+                fontFamily: "GothamThin",
+                textTransform: "capitalize",
+              }}
+            >
+              {props.book.volumeInfo.categories[0]}
+            </Text>
+          </BookSubject>
         <Title>Description:</Title>
         <BookDescription>
-          {props.book.description && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              {props.book.description}
-            </Text>
-          )}
-          {props.book.description === null && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                fontSize: 22,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              We couldn't find any description for this book. Try again later.
-            </Text>
-          )}
+          <Text
+            style={{
+              fontFamily: "GothamLight",
+              marginVertical: 12,
+              color: "#666",
+              textAlign: "justify",
+            }}
+          >
+            {props.book.volumeInfo.description ? props.book.volumeInfo.description : "We couldn't find any description for this book. Try again later."}
+          </Text>
         </BookDescription>
       </BookContainer>
       <Actions>
@@ -106,7 +80,7 @@ const DiscoverPreview = (props) => {
         </AddShelf>
         <WebSearch
           onPress={() => {
-            handleGoogleSearch(props.book.title, props.book.author);
+            handleGoogleSearch(props.book.volumeInfo.title, props.book.volumeInfo.authors[0]);
           }}
         >
           <Text

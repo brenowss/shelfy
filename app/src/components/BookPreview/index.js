@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text } from "react-native";
 
 import * as WebBrowser from "expo-web-browser";
@@ -12,7 +12,6 @@ import {
   Header,
   BookContainer,
   BookCover,
-  BookSubjects,
   BookSubject,
   Title,
   BookDescription,
@@ -22,27 +21,8 @@ import {
 } from "./styles";
 
 const BookPreview = (props) => {
-  const [bookDescription, setBookDescription] = useState();
-
   function handleModal() {
     props.onBackdropPress(false);
-  }
-
-  function getBookDescription() {
-    const book_olid = props.book.key.replace("/works/", "");
-    fetch(`https://openlibrary.org/works/${book_olid}.json`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (typeof res.description === "object" && res.description !== null) {
-          setBookDescription(res.description.value);
-        }
-        if (typeof res.description === "string") {
-          setBookDescription(res.description);
-        }
-        if (res.description === null) {
-          setBookDescription(null);
-        }
-      });
   }
 
   function handleGoogleSearch(title, author) {
@@ -59,55 +39,35 @@ const BookPreview = (props) => {
       <BookContainer>
         <BookCover
           source={{
-            uri: `http://covers.openlibrary.org/b/id/${props.book.cover_id}-L.jpg`,
+            uri: props.book.volumeInfo.imageLinks.thumbnail,
           }}
         />
-        <BookTitle>{props.book.title}</BookTitle>
-        <BookAuthor>{props.book.authors[0].name}</BookAuthor>
-        <BookSubjects horizontal={true} showsHorizontalScrollIndicator={false}>
-          {
-            (props.book.subject && getBookDescription(),
-            props.book.subject.slice(0, 3).map((subject) => (
-              <BookSubject key={subject}>
-                <Text
-                  style={{
-                    fontFamily: "GothamThin",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {subject}
-                </Text>
-              </BookSubject>
-            )))
-          }
-        </BookSubjects>
+        <BookTitle>{props.book.volumeInfo.title}</BookTitle>
+        <BookAuthor>{props.book.volumeInfo.authors[0]}</BookAuthor>
+        <BookSubject>
+          <Text
+            style={{
+              fontFamily: "GothamThin",
+              textTransform: "capitalize",
+            }}
+          >
+            {props.book.volumeInfo.categories[0]}
+          </Text>
+        </BookSubject>
         <Title>Description:</Title>
         <BookDescription>
-          {bookDescription && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              {bookDescription}
-            </Text>
-          )}
-          {bookDescription === null && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                fontSize: 22,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              We couldn't find any description for this book. Try again later.
-            </Text>
-          )}
+          <Text
+            style={{
+              fontFamily: "GothamLight",
+              marginVertical: 12,
+              color: "#666",
+              textAlign: "justify",
+            }}
+          >
+            {props.book.volumeInfo.description
+              ? props.book.volumeInfo.description
+              : "We couldn't find any description for this book. Try again later."}
+          </Text>
         </BookDescription>
       </BookContainer>
       <Actions>
@@ -116,7 +76,10 @@ const BookPreview = (props) => {
         </AddShelf>
         <WebSearch
           onPress={() => {
-            handleGoogleSearch(props.book.title, props.book.authors[0].name);
+            handleGoogleSearch(
+              props.book.volumeInfo.title,
+              props.book.volumeInfo.authors[0]
+            );
           }}
         >
           <Text

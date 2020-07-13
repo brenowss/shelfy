@@ -2,7 +2,7 @@ const subjects = [
   "romance",
   "suspense",
   "science_fiction",
-  "drama",
+  "humor",
   "self_improvement",
   "fiction",
   "murder"
@@ -25,7 +25,7 @@ export function getSubjectColor(givenSubject) {
       return "#4366C099";
     case "murder":
       return "#e6394699";
-    case "drama":
+    case "humor":
       return "#ffc6ff99";
     case "self_improvement":
       return "#a0c4ff99";

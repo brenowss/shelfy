@@ -87,7 +87,7 @@ module.exports = {
       };
       top3.push(bestSeller);
 
-      await connection("discover").insert({
+      await connection("amazon_week_highlight").insert({
         book_olid: OLID,
         book_title: title,
         book_cover_url: url,

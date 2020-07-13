@@ -45,6 +45,12 @@ export const CardBanner = styled.TouchableOpacity`
   margin-bottom: 12px;
 `;
 
+export const BookStorePlace = styled.Text`
+  font-family: GothamMedium;
+  font-size: 18px;
+  color: #1b2d45;
+`;
+
 export const BookCover = styled.Image`
   height: 170px;
   width: 38%;
@@ -66,19 +72,15 @@ export const BookAuthor = styled.Text`
   align-items: center;
 `;
 
-export const Subjects = styled.View`
-  justify-content: center;
-  margin-bottom: 50px;
-  width: 100%;
-`;
-
-export const SubjectRow = styled.View`
+export const DiscoverSection = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 12px;
 `;
 
-export const Subject = styled.TouchableOpacity`
+export const DiscoverCard = styled.TouchableOpacity`
   justify-content: center;
   height: 100px;
   margin-bottom: 10px;
@@ -87,7 +89,14 @@ export const Subject = styled.TouchableOpacity`
   flex-direction: row;
 `;
 
-export const SubjectTitle = styled.Text`
+export const Title = styled.Text`
+  font-family: GothamBold;
+  font-size: 18px;
+  align-self: flex-start;
+  margin-top: 6px;
+`;
+
+export const CardTitle = styled.Text`
   margin: 20px 0 0 15px;
   font-family: GothamBold;
   color: #fff;
@@ -95,7 +104,7 @@ export const SubjectTitle = styled.Text`
   z-index: 9;
   font-size: 16px;
 `;
-export const SubjectCover = styled.Image`
+export const CardCover = styled.Image`
   width: 75px;
   height: 65px;
   resize-mode: contain;

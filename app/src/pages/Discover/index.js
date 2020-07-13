@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   View,
+  Text,
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
+
 import { LinearGradient } from "expo-linear-gradient";
 
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
@@ -25,14 +28,15 @@ import {
   SearchInput,
   CardContainer,
   CardBanner,
+  Title,
+  BookStorePlace,
   BookCover,
   BookTitle,
   BookAuthor,
-  Subject,
-  SubjectRow,
-  Subjects,
-  SubjectTitle,
-  SubjectCover,
+  DiscoverSection,
+  DiscoverCard,
+  CardTitle,
+  CardCover,
 } from "./styles";
 
 const Discover = () => {
@@ -42,12 +46,23 @@ const Discover = () => {
   const [subjects, setSubjects] = useState(null);
   const [activeSubject, setActiveSubject] = useState(null);
 
+  const route = useRoute();
+
   function handleModal() {
     setModalState(!modalState);
   }
 
+  function handleSubject() {
+    route.params && setActiveSubject(route.params.subject);
+  }
+
+  function handleBook(book) {
+    setModalState(!modalState);
+    setOpenedBook(book);
+  }
+
   async function getDiscover() {
-    const { data } = await api.get("/discover");
+    const { data } = await api.get("/discover/highlight");
     const subjects = data[0].book_subjects && data[0].book_subjects.split(", ");
 
     setDiscover({
@@ -56,6 +71,7 @@ const Discover = () => {
       cover_url: data[0].book_cover_url,
       description: data[0].book_description,
       subjects,
+      position: data[0].position,
       author: data[0].book_author,
     });
   }
@@ -63,10 +79,14 @@ const Discover = () => {
   useEffect(() => {
     getDiscover();
 
-    api.get("subjects").then((res) => {
+    api.get("/discover/subjects").then((res) => {
       setSubjects(res.data);
     });
   }, []);
+
+  useLayoutEffect(() => {
+    handleSubject();
+  }, [route.params]);
 
   return (
     <>
@@ -97,6 +117,7 @@ const Discover = () => {
                 }}
               >
                 <View>
+                  <BookStorePlace>{`#${discover.position} selling this week`}</BookStorePlace>
                   <BookTitle>{discover.title}</BookTitle>
                   <BookAuthor>
                     <Icon name="pencil-alt" size={10} />{" "}
@@ -113,11 +134,65 @@ const Discover = () => {
           ) : (
             <ActivityIndicator size="large" color="#2FA749" />
           )}
-          <Subjects>
-            <SubjectRow>
-              {subjects &&
-                subjects.slice(0, 2).map((subject) => (
-                  <Subject
+          <Title>Recommended for you</Title>
+          <DiscoverSection>
+            <DiscoverCard
+              style={{
+                width: Dimensions.get("window").width * 0.46,
+              }}
+              onPress={() => {
+                setActiveSubject(subject);
+              }}
+            >
+              <LinearGradient
+                start={{ x: -0.6, y: 0 }}
+                end={{ x: 0.7, y: 0 }}
+                colors={["#333333aa", "#b8c1ec"]}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 8,
+                  flexDirection: "row",
+                }}
+              >
+                <CardTitle>Made for you</CardTitle>
+                <CardCover source={{}} />
+              </LinearGradient>
+            </DiscoverCard>
+            <DiscoverCard
+              style={{
+                width: Dimensions.get("window").width * 0.46,
+              }}
+              onPress={() => {
+                setActiveSubject(subject);
+              }}
+            >
+              <LinearGradient
+                start={{ x: -0.6, y: 0 }}
+                end={{ x: 0.7, y: 0 }}
+                colors={["#333333aa", "#ff8906"]}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 8,
+                  flexDirection: "row",
+                }}
+              >
+                <CardTitle>Greatest hits</CardTitle>
+                <CardCover source={{}} />
+              </LinearGradient>
+            </DiscoverCard>
+          </DiscoverSection>
+          <Title>Popular book subjects</Title>
+          <DiscoverSection>
+            {subjects &&
+              subjects
+                .filter(
+                  (subject) =>
+                    subject.name === "Romance" || subject.name === "Mystery"
+                )
+                .map((subject) => (
+                  <DiscoverCard
                     key={subject.name}
                     style={{
                       width: Dimensions.get("window").width * 0.46,
@@ -127,7 +202,7 @@ const Discover = () => {
                     }}
                   >
                     <LinearGradient
-                      start={{ x: 0, y: 0 }}
+                      start={{ x: -0.6, y: 0 }}
                       end={{ x: 0.7, y: 0 }}
                       colors={["#111111aa", `${subject.color}`]}
                       style={{
@@ -137,74 +212,50 @@ const Discover = () => {
                         flexDirection: "row",
                       }}
                     >
-                      <SubjectTitle>{subject.name}</SubjectTitle>
-                      <SubjectCover source={{ uri: subject.image }} />
+                      <CardTitle>{subject.name}</CardTitle>
+                      <CardCover source={{ uri: subject.image }} />
                     </LinearGradient>
-                  </Subject>
+                  </DiscoverCard>
                 ))}
-            </SubjectRow>
-            <SubjectRow>
-              {subjects &&
-                subjects.slice(2, 4).map((subject) => (
-                  <Subject
-                    key={subject.name}
+          </DiscoverSection>
+
+          <Title>Browse all</Title>
+          <DiscoverSection>
+            {subjects &&
+              subjects.map((subject) => (
+                <DiscoverCard
+                  key={subject.name}
+                  style={{
+                    width: Dimensions.get("window").width * 0.46,
+                  }}
+                  onPress={() => {
+                    setActiveSubject(subject);
+                  }}
+                >
+                  <LinearGradient
+                    start={{ x: -0.6, y: 0 }}
+                    end={{ x: 0.7, y: 0 }}
+                    colors={["#111111aa", `${subject.color}`]}
                     style={{
-                      width: Dimensions.get("window").width * 0.46,
-                    }}
-                    onPress={() => {
-                      setActiveSubject(subject);
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 8,
+                      flexDirection: "row",
                     }}
                   >
-                    <LinearGradient
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0.7, y: 0 }}
-                      colors={["#111111aa", `${subject.color}`]}
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        borderRadius: 8,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <SubjectTitle>{subject.name}</SubjectTitle>
-                      <SubjectCover source={{ uri: subject.image }} />
-                    </LinearGradient>
-                  </Subject>
-                ))}
-            </SubjectRow>
-            <SubjectRow>
-              {subjects &&
-                subjects.slice(4, 6).map((subject) => (
-                  <Subject
-                    key={subject.name}
-                    style={{
-                      width: Dimensions.get("window").width * 0.46,
-                    }}
-                    onPress={() => {
-                      setActiveSubject(subject);
-                    }}
-                  >
-                    <LinearGradient
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0.7, y: 0 }}
-                      colors={["#111111aa", `${subject.color}`]}
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        borderRadius: 8,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <SubjectTitle>{subject.name}</SubjectTitle>
-                      <SubjectCover source={{ uri: subject.image }} />
-                    </LinearGradient>
-                  </Subject>
-                ))}
-            </SubjectRow>
-          </Subjects>
+                    <CardTitle>{subject.name}</CardTitle>
+                    <CardCover source={{ uri: subject.image }} />
+                  </LinearGradient>
+                </DiscoverCard>
+              ))}
+          </DiscoverSection>
         </Container>
       ) : (
-        <SubjectView subject={activeSubject}>
+        <SubjectView
+          subject={activeSubject}
+          setOpenedBook={handleBook}
+          setModalState
+        >
           <TouchableOpacity
             onPress={() => {
               setActiveSubject(null);
@@ -215,7 +266,7 @@ const Discover = () => {
         </SubjectView>
       )}
       {modalState && (
-        <DiscoverPreview onBackdropPress={setModalState} book={openedBook}>
+        <DiscoverPreview onBackPress={setModalState} book={openedBook}>
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>

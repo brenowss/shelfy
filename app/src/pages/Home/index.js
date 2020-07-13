@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
-import Constants from "expo-constants";
+import { useNavigation } from "@react-navigation/native";
 
 import ProgressCircle from "react-native-progress-circle";
 
 import BookPreview from "../../components/BookPreview";
+
+import api from "../../services/api";
 
 import {
   FontAwesome5 as Icon,
@@ -39,45 +41,15 @@ export default Home = () => {
   const [openedBook, setOpenedBook] = useState(null);
   const [recentProgress, setRecentProgress] = useState(null);
   const [modalState, setModalState] = useState(false);
+  const [subjects, setSubjects] = useState(null);
 
-  const subjectsArray = [
-    {
-      name: "Romance",
-      icon: "heart",
-      color: "#e6394666",
-    },
-    {
-      name: "Mystery",
-      icon: "incognito",
-      color: "#bdb2ff66",
-    },
-    {
-      name: "Sci-Fi",
-      icon: "alien",
-      color: "#2fa74966",
-    },
-    {
-      name: "Drama",
-      icon: "drama-masks",
-      color: "#ffc6ff66",
-    },
-    {
-      name: "Fantasy",
-      icon: "sword",
-      color: "#f25f4c66",
-    },
-    {
-      name: "Self-Improvement",
-      icon: "tree",
-      color: "#a0c4ff66",
-    },
-  ];
+  const navigation = useNavigation();
 
   function getRecommendations() {
-    fetch("https://openlibrary.org/subjects/science_fiction.json?limit=5")
+    fetch(`https://www.googleapis.com/books/v1/volumes?maxResults=8&q=flowers+subject:romance&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`)
       .then((res) => res.json())
       .then((res) => {
-        setHomeRecommendations(res.works);
+        setHomeRecommendations(res.items);
       });
   }
 
@@ -91,6 +63,10 @@ export default Home = () => {
 
   function handleModal() {
     setModalState(!modalState);
+  }
+
+  function handleNavigateToSubject(subject) {
+    navigation.navigate('Discover', { subject })
   }
 
   const isDay = () => {
@@ -109,14 +85,16 @@ export default Home = () => {
     isDay();
     getRecommendations();
     getRecentProgress();
+    api.get("/discover/subjects").then((res) => {
+      setSubjects(res.data);
+    });
   }, []);
 
   return (
     <>
       <Container>
         <ScreenTitle>
-          {greeting}{" "}
-          <Text style={{ fontFamily: "GothamBold" }}>Breno</Text>
+          {greeting} <Text style={{ fontFamily: "GothamBold" }}>Breno</Text>
         </ScreenTitle>
         <Indication>Have you done your reading today?</Indication>
         <Recommendations>
@@ -127,19 +105,22 @@ export default Home = () => {
           >
             {homeRecommendations ? (
               homeRecommendations.map((work) => (
-                <BookContainer key={work.title} onPress={()=> {
-                  handleModal();
-                  setOpenedBook(work);
-                }}>
+                <BookContainer
+                  key={work.id}
+                  onPress={() => {
+                    handleModal();
+                    setOpenedBook(work);
+                  }}
+                >
                   <BookCover
                     source={{
-                      uri: `http://covers.openlibrary.org/b/id/${work.cover_id}-L.jpg`,
+                      uri: work.volumeInfo.imageLinks.thumbnail,
                     }}
                   />
                   <BookAuthor>
-                    <Icon name="pencil-alt" size={10} /> {work.authors[0].name}
+                    <Icon name="pencil-alt" size={10} /> {work.volumeInfo.authors[0]}
                   </BookAuthor>
-                  <BookTitle>{work.title}</BookTitle>
+                  <BookTitle>{work.volumeInfo.title}</BookTitle>
                 </BookContainer>
               ))
             ) : (
@@ -179,11 +160,14 @@ export default Home = () => {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         >
-          {subjectsArray ? (
-            subjectsArray.map((subject) => (
+          {subjects ? (
+            subjects.map((subject) => (
               <Subject
                 key={subject.name}
-                style={{ backgroundColor: subject.color }}
+                style={{ backgroundColor: `${subject.color}66` }} //the 66 sets the alpha opacity to the HEX subject.color
+                onPress={() => {
+                  handleNavigateToSubject(subject);
+                }}
               >
                 <MaterialCommunityIcons name={subject.icon} size={18} />
                 <SubjectTitle>{subject.name}</SubjectTitle>

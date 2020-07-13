@@ -42,11 +42,6 @@ export const BookCover = styled.Image`
   resize-mode: stretch;
 `;
 
-export const BookSubjects = styled.ScrollView`
-  flex-direction: row;
-  width: 100%;
-`;
-
 export const BookSubject = styled.TouchableOpacity`
   padding: 12px 16px;
   background-color: #99999922;

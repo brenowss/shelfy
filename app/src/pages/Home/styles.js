@@ -112,4 +112,5 @@ export const SubjectTitle = styled.Text`
   font-family: GothamMedium;
   color: #162335;
   margin-left: 3px;
+  opacity: 1;
 `;
