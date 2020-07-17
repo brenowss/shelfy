@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import ProgressCircle from "react-native-progress-circle";
-
 import BookPreview from "../../components/BookPreview";
 
 import api from "../../services/api";
@@ -111,8 +109,8 @@ export default Home = () => {
     isDay();
     getRecommendations();
     getRecentProgress();
-    api.get("/discover/subjects").then((res) => {
-      setSubjects(res.data);
+    api.get("/subjects").then((res) => {
+      setSubjects(res.data.subjects);
     });
     getMoreFromAuthors();
     getMoreFromSubjects();

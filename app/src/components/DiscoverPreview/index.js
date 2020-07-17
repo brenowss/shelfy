@@ -53,7 +53,7 @@ const DiscoverPreview = (props) => {
               textTransform: "capitalize",
             }}
           >
-            {props.book.book_subject}
+            {props.book.subject}
           </Text>
         </BookSubject>
         <Title>Description:</Title>
