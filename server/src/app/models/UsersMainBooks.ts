@@ -1,18 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("highlight")
-class Highlight {
+@Entity("users_main_books")
+class UsersMainBooks {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
   @Column()
-  title: string;
+  main_book_id: string;
 
   @Column()
-  google_books_id: string;
-  
-  @Column()
-  date: string;
+  user_id: string;
 }
 
-export default Highlight;
+export default UsersMainBooks;

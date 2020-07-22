@@ -22,12 +22,7 @@ export class CreateUsersTable1594676932459 implements MigrationInterface {
             length: "50"
           },
           {
-            name: "first_name",
-            type: "varchar",
-            length: "25"
-          },
-          {
-            name: "last_name",
+            name: "username",
             type: "varchar",
             length: "25"
           },

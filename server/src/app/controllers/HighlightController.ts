@@ -15,7 +15,7 @@ class HighlightController {
 
   async store(req: Request, res: Response) {
     const repository = getRepository(Highlight);
-    const { id, title, url } = req.body;
+    const { id, title, google_books_id } = req.body;
 
     const highlightExists = await repository.findOne({ where: { title } });
 
@@ -25,7 +25,7 @@ class HighlightController {
 
     const date = new Date().toLocaleDateString("pt-br")
     
-    const highlight = repository.create({ id, title, url, date });
+    const highlight = repository.create({ id, title, google_books_id, date });
     await repository.save(highlight);
 
     return res.json(highlight)
