@@ -2,6 +2,7 @@ import React from "react";
 import { AppLoading } from "expo";
 
 import { useFonts } from '@use-expo/font';
+import { UserProvider } from "./src/services/UserContext";
 
 import Routes from "./src/routes";
 
@@ -17,7 +18,9 @@ export default function App() {
     return <AppLoading />;
   } else {
   return (
-    <Routes />
+    <UserProvider>
+      <Routes />
+    </UserProvider>
   );
   }
 }

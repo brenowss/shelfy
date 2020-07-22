@@ -21,10 +21,6 @@ import {
 } from "./styles";
 
 const BookPreview = (props) => {
-  function handleModal() {
-    props.onBackPress(false);
-  }
-
   function handleGoogleSearch(title, author) {
     const book_title = title.replace(/ /, "+");
     const book_author = author.replace(/ /, "+");
@@ -34,7 +30,7 @@ const BookPreview = (props) => {
   }
 
   return (
-    <Container isVisible={true} onBackButtonPress={handleModal}>
+    <Container isVisible={true} onBackButtonPress={() => {props.onBackPress()}}>
       <Header>{props.children}</Header>
       <BookContainer>
         <BookCover
@@ -51,7 +47,7 @@ const BookPreview = (props) => {
               textTransform: "capitalize",
             }}
           >
-            {props.book.volumeInfo.categories[0]}
+            {props.book.volumeInfo.categories ? props.book.volumeInfo.categories[0] : props.subject.name}
           </Text>
         </BookSubject>
         <Title>Description:</Title>

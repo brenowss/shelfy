@@ -7,6 +7,7 @@ import Svg, { Path } from "react-native-svg";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 
 import SignInForm from "../../components/SignInForm";
+import SignUpForm from "../../components/SignUpForm";
 
 import {
   Container,
@@ -21,12 +22,16 @@ import {
 } from "./styles";
 
 const Login = () => {
-  const [modalState, setModalState] = useState(false);
+  const [signInModalState, setSignInModalState] = useState(false);
+  const [signUpModalState, setSignUpModalState] = useState(false);
 
-  function handleModal() {
-    setModalState(!modalState);
+  function handleSignInModal() {
+    setSignInModalState(!signInModalState);
   }
 
+  function handleSignUpModal() {
+    setSignUpModalState(!signUpModalState);
+  }
   return (
     <View>
       <BannerContainer>
@@ -51,7 +56,7 @@ const Login = () => {
           <Actions>
             <ActionButton
               style={{ backgroundColor: "#266EF1" }}
-              onPress={handleModal}
+              onPress={handleSignInModal}
             >
               <Text
                 style={{
@@ -92,7 +97,7 @@ const Login = () => {
             >
               Don’t have an account yet?
             </Text>
-            <ActionButton style={{ backgroundColor: "#4376A8" }}>
+            <ActionButton style={{ backgroundColor: "#4376A8" }} onPress={handleSignUpModal}>
               <Text
                 style={{
                   color: "#fff",
@@ -107,12 +112,26 @@ const Login = () => {
           </Actions>
         </Container>
       </Animatable.View>
-      {modalState && (
+      {signInModalState && (
         <SignInForm>
-          <TouchableOpacity onPress={handleModal} style={{ width: 50, height: 35 }}>
+          <TouchableOpacity
+            onPress={handleSignInModal}
+            style={{ width: 50, height: 35 }}
+          >
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>
         </SignInForm>
+      )}
+
+      {signUpModalState && (
+        <SignUpForm>
+          <TouchableOpacity
+            onPress={handleSignUpModal}
+            style={{ width: 50, height: 35 }}
+          >
+            <Icon name="angle-left" size={26} />
+          </TouchableOpacity>
+        </SignUpForm>
       )}
     </View>
   );

@@ -7,6 +7,8 @@ export const Container = styled(Modal)`
   margin-top: 20%;
   background-color: #fff;
   width: 100%;
+  max-height: 90%;
+  height: 75%;
   position: absolute;
   bottom: 0;
   border-top-left-radius: 26px;
@@ -29,7 +31,7 @@ export const ModalTitle = styled.Text`
 `;
 
 export const InputGroup = styled.View`
-  margin: 12px 0;
+    margin: 12px 0;
 `;
 
 export const Label = styled.Text`
@@ -66,4 +68,18 @@ export const ForgotPassword = styled.TouchableOpacity``;
 export const ErrorMessage = styled.Text`
   font-family: GothamMedium;
   color: #f33;
+`;
+
+export const Success = styled.Image`
+  width: 80%;
+  height: 40%;
+  margin-top: -80px;
+  resize-mode: contain;
+`;
+
+export const SuccessTitle = styled.Text`
+  font-family: GothamBold;
+  font-size: 50px;
+  color: #162335;
+  text-align: center;
 `;

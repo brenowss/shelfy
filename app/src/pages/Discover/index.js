@@ -21,6 +21,7 @@ import {
 import BookPreview from "../../components/BookPreview";
 import DiscoverPreview from "../../components/DiscoverPreview";
 import SubjectView from "../../components/SubjectView";
+
 import {
   Container,
   ScreenTitle,
@@ -64,24 +65,25 @@ const Discover = () => {
   }
 
   async function getDiscover() {
-    const { data } = await api.get("/discover/highlight");
+    const {
+      data: { highlight },
+    } = await api.get("/highlight");
 
-    setDiscover({
-      id: data[0].id,
-      title: data[0].book_title,
-      cover_url: data[0].book_cover_url,
-      description: data[0].book_description,
-      subject: data[0].book_subjects,
-      position: data[0].position,
-      author: data[0].book_author,
-    });
+    fetch(
+      `https://www.googleapis.com/books/v1/volumes/${highlight.google_books_id}?key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        setDiscover(res);
+      });
   }
 
   useEffect(() => {
     getDiscover();
 
-    api.get("/discover/subjects").then((res) => {
-      setSubjects(res.data);
+    api.get("/subjects").then((res) => {
+      const orderedSubjects = res.data.subjects.sort((a, b) => a.name.localeCompare(b.name))
+      setSubjects(orderedSubjects);
     });
   }, []);
 
@@ -107,8 +109,8 @@ const Discover = () => {
             <CardContainer>
               <CardBanner
                 style={{
-                  backgroundColor: discover.subjects
-                    ? getSubjectColor(discover.subjects)
+                  backgroundColor: discover.volumeInfo.categories
+                    ? getSubjectColor(discover.volumeInfo.categories[0])
                     : "#a0c4ff99",
                 }}
                 activeOpacity={0.7}
@@ -119,16 +121,16 @@ const Discover = () => {
                 }}
               >
                 <View>
-                  <BookStorePlace>{`#${discover.position} selling this week`}</BookStorePlace>
-                  <BookTitle>{discover.title}</BookTitle>
+                  <BookStorePlace>#1 selling this week</BookStorePlace>
+                  <BookTitle>{discover.volumeInfo.title}</BookTitle>
                   <BookAuthor>
                     <Icon name="pencil-alt" size={10} />{" "}
-                    {discover.author ? discover.author : "Unknown writer"}
+                    {discover.volumeInfo.authors ? discover.volumeInfo.authors[0] : "Unknown author"}
                   </BookAuthor>
                 </View>
                 <BookCover
                   source={{
-                    uri: discover.cover_url,
+                    uri: discover.volumeInfo.imageLinks.large ? discover.volumeInfo.imageLinks.large : discover.volumeInfo.imageLinks.thumbnail
                   }}
                 />
               </CardBanner>
@@ -274,19 +276,19 @@ const Discover = () => {
         <DiscoverPreview
           onBackPress={setModalState}
           book={openedBook}
-          subject={activeSubject}
         >
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>
         </DiscoverPreview>
-      ) }
-        {modalState && previewType !== "discover" && (
-        <BookPreview onBackPress={setModalState} book={openedBook}>
+      )}
+      {modalState && previewType !== "discover" && (
+        <BookPreview onBackPress={handleModal} book={openedBook} subject={activeSubject}>
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
           </TouchableOpacity>
-        </BookPreview>)}
+        </BookPreview>
+      )}
     </>
   );
 };

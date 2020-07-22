@@ -21,10 +21,6 @@ import {
 } from "./styles";
 
 const DiscoverPreview = (props) => {
-  function handleModal() {
-    props.onBackPress(false);
-  }
-
   function handleGoogleSearch(title, author) {
     const book_title = title.replace(/ /, "+");
     const book_author = book_author && author.replace(/ /, "+");
@@ -36,16 +32,16 @@ const DiscoverPreview = (props) => {
   }
 
   return (
-    <Container isVisible={true} onBackButtonPress={handleModal}>
+    <Container isVisible={true} onBackButtonPress={() => {props.onBackPress()}}>
       <Header>{props.children}</Header>
       <BookContainer>
         <BookCover
           source={{
-            uri: props.book.cover_url,
+            uri: props.book.volumeInfo.imageLinks.large ? props.book.volumeInfo.imageLinks.large : props.book.volumeInfo.imageLinks.thumbnail
           }}
         />
-        <BookTitle>{props.book.title}</BookTitle>
-        <BookAuthor>{props.book.author}</BookAuthor>
+        <BookTitle>{props.book.volumeInfo.title}</BookTitle>
+        <BookAuthor>{props.book.volumeInfo.authors[0]}</BookAuthor>
         <BookSubject>
           <Text
             style={{
@@ -53,36 +49,23 @@ const DiscoverPreview = (props) => {
               textTransform: "capitalize",
             }}
           >
-            {props.book.subject}
+            {props.book.volumeInfo.categories[0]}
           </Text>
         </BookSubject>
         <Title>Description:</Title>
         <BookDescription>
-          {props.book.description && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              {props.book.description}
-            </Text>
-          )}
-          {props.book.description === null && (
-            <Text
-              style={{
-                fontFamily: "GothamLight",
-                marginVertical: 12,
-                fontSize: 22,
-                color: "#666",
-                textAlign: "justify",
-              }}
-            >
-              We couldn't find any description for this book. Try again later.
-            </Text>
-          )}
+          <Text
+            style={{
+              fontFamily: "GothamLight",
+              marginVertical: 12,
+              color: "#666",
+              textAlign: "justify",
+            }}
+          >
+            {props.book.volumeInfo.description
+              ? props.book.volumeInfo.description
+              : "We couldn't find any description for this book. Try again later."}
+          </Text>
         </BookDescription>
       </BookContainer>
       <Actions>

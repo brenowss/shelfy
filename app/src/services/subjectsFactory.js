@@ -9,7 +9,13 @@ const subjects = [
 ];
 
 export function getSubjectColor(givenSubject) {
-  const treatedSubject = givenSubject.map((v) => v.toLowerCase());
+  let newSubjects = "";
+
+  if(givenSubject.includes(' / ')) {
+    newSubjects = givenSubject.split(' / ');
+  }
+
+  const treatedSubject = newSubjects !== "" ? newSubjects.map((v) => v.toLowerCase()) : givenSubject.map((v) => v.toLowerCase()); 
 
   const matchingSubject = subjects.filter((element) =>
     treatedSubject.includes(element)

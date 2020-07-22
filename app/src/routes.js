@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+
+import { Context } from "./services/UserContext";
 
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 
@@ -9,31 +12,34 @@ import Discover from "./pages/Discover";
 import Shelf from "./pages/Shelf";
 import Profile from "./pages/Profile";
 
-import Login from './pages/Login'
+import Login from "./pages/Login";
 
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Routes() {
-  return (
-    <NavigationContainer theme={{ colors: { background: '#fffffe'}}}>
+  const { authenticated } = useContext(Context);
+
+  function PrivateRoutes() {
+    return (
       <Tab.Navigator
         initialRouteName="Home"
         inactiveColor="#162335"
         tabBarOptions={{
           style: {
-            backgroundColor : '#fefefe',
-            borderTopColor: '#77777766',
+            backgroundColor: "#fefefe",
+            borderTopColor: "#77777766",
             borderTopWidth: 0.2,
           },
-          activeTintColor: '#64B5F6',
+          activeTintColor: "#64B5F6",
           labelStyle: {
-            fontFamily: 'GothamMedium',
+            fontFamily: "GothamMedium",
             alignItems: "center",
-            marginBottom: 3
-          }
+            marginBottom: 3,
+          },
         }}
       >
-        {/* <Tab.Screen
+        <Tab.Screen
           name="Home"
           activeBackgroundColor="#fff"
           component={Home}
@@ -70,15 +76,20 @@ export default function Routes() {
               <Icon name="user-alt" size={21} color={color} />
             ),
           }}
-        /> */}
-        <Tab.Screen
-          name="Login"
-          component={Login}
-          options={{
-            tabBarVisible: false
-          }}
         />
       </Tab.Navigator>
+    );
+  }
+
+  return (
+    <NavigationContainer theme={{ colors: { background: "#fffffe" } }}>
+      <Stack.Navigator initialRouteName="Login" headerMode={"none"}>
+        {authenticated === false ? (
+          <Stack.Screen name="Login" component={Login} />
+        ) : (
+          <Stack.Screen name="PrivateRoutes" component={PrivateRoutes} />
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

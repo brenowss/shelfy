@@ -9,13 +9,13 @@ export const Container = styled(Modal)`
   width: 100%;
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
-  justify-content: space-between;
+  justify-content: flex-start;
   min-height: 500px;
 `;
 
 export const Header = styled.View`
   justify-content: flex-start;
-  margin-bottom: 5px;
+  margin-bottom: 50px;
 `;
 
 export const BookContainer = styled.View`
@@ -74,7 +74,7 @@ export const Actions = styled.View`
 export const AddShelf = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  border-color: #69CA87;
+  border-color: #69ca87;
   width: 40px;
   height: 40px;
   border-width: 2px;
@@ -83,7 +83,7 @@ export const AddShelf = styled.TouchableOpacity`
 
 export const WebSearch = styled.TouchableOpacity`
   width: 80%;
-  background-color: #69CA87;
+  background-color: #69ca87;
   align-items: center;
   padding: 14px;
   border-radius: 12px;
