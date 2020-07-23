@@ -5,11 +5,10 @@ import { getRepository } from "typeorm";
 import Subject from "../models/Subject";
 
 class SubjectController {
-
   async index(req: Request, res: Response) {
     const repository = getRepository(Subject);
 
-    const subjects = await repository.find()
+    const subjects = await repository.find({ order: { name: "ASC" } });
     return res.send({ subjects });
   }
 
@@ -26,7 +25,7 @@ class SubjectController {
     const subject = repository.create({ id, name, url, icon, color, image });
     await repository.save(subject);
 
-    return res.json(subject)
+    return res.json(subject);
   }
 }
 

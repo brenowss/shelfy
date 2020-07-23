@@ -25,5 +25,6 @@ routes.get('/highlight', HighlightController.index);
 routes.post('/user_books', BooksController.store) // add JWT verify
 routes.get('/user_books', BooksController.index)
 routes.delete('/user_books', BooksController.delete)
+routes.get('/user_books/list', BooksController.list)
 
 export default routes;
