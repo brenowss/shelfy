@@ -17,7 +17,7 @@ const UserProvider = ({ children }) => {
       const user = await AsyncStorage.getItem("user");
       if (token && user) {
         setAuthenticated(true);
-        setActiveUser(user);
+        setActiveUser(JSON.parse(user));
       } else {
         setAuthenticated(false);
       }

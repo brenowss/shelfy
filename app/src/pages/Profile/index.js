@@ -12,7 +12,7 @@ const Profile = () => {
       <Container>
           <ScreenTitle>Profile</ScreenTitle>
           <Button title="logout" onPress={handleLogout} />
-          <Text>{activeUser}</Text>
+          <Text>{activeUser.id}</Text>
       </Container>
   );
 }

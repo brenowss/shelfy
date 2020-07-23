@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -10,6 +10,8 @@ import {
   FontAwesome5 as Icon,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+
+import { Context } from "../../services/UserContext";
 
 import {
   Container,
@@ -42,6 +44,8 @@ export default Home = () => {
   const [subjects, setSubjects] = useState(null);
   const [moreFromAuthor1, setmoreFromAuthor1] = useState(null);
   const [moreFromSubject1, setmoreFromSubject1] = useState(null);
+
+  const { activeUser } = useContext(Context);
 
   const navigation = useNavigation();
   const recentAuthor1 = "George R. R. Martin";
@@ -98,11 +102,13 @@ export default Home = () => {
     if (hour >= 7 && hour < 12) {
       setGreeting("Good morning,");
     }
-    if (hour >= 12 && hour < 18) {
+    else if (hour >= 12 && hour < 18) {
       setGreeting("Welcome,");
     }
-    if (hour >= 18 && hour < 24) {
+    else if (hour >= 18 && hour < 24) {
       setGreeting("Good night,");
+    } else {
+      setGreeting("Hello,");
     }
   };
   useEffect(() => {
@@ -120,7 +126,10 @@ export default Home = () => {
     <>
       <Container>
         <ScreenTitle>
-          {greeting} <Text style={{ fontFamily: "GothamBold" }}>Breno</Text>
+          {greeting}{" "}
+          <Text style={{ fontFamily: "GothamBold" }}>
+            {activeUser && activeUser.username}
+          </Text>
         </ScreenTitle>
         <Indication>Have you done your reading today?</Indication>
         <ListContainer>

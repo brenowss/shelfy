@@ -19,7 +19,6 @@ import {
 } from "../../services/subjectsFactory";
 
 import BookPreview from "../../components/BookPreview";
-import DiscoverPreview from "../../components/DiscoverPreview";
 import SubjectView from "../../components/SubjectView";
 
 import {
@@ -47,7 +46,6 @@ const Discover = () => {
   const [openedBook, setOpenedBook] = useState(null);
   const [subjects, setSubjects] = useState(null);
   const [activeSubject, setActiveSubject] = useState(null);
-  const [previewType, setPreviewType] = useState("");
 
   const route = useRoute();
 
@@ -117,7 +115,6 @@ const Discover = () => {
                 onPress={() => {
                   handleModal();
                   setOpenedBook(discover);
-                  setPreviewType("discover");
                 }}
               >
                 <View>
@@ -203,7 +200,6 @@ const Discover = () => {
                     }}
                     onPress={() => {
                       setActiveSubject(subject);
-                      setPreviewType("");
                     }}
                   >
                     <LinearGradient
@@ -235,7 +231,6 @@ const Discover = () => {
                   }}
                   onPress={() => {
                     setActiveSubject(subject);
-                    setPreviewType("");
                   }}
                 >
                   <LinearGradient
@@ -272,17 +267,7 @@ const Discover = () => {
           </TouchableOpacity>
         </SubjectView>
       )}
-      {modalState && previewType === "discover" && (
-        <DiscoverPreview
-          onBackPress={setModalState}
-          book={openedBook}
-        >
-          <TouchableOpacity onPress={handleModal}>
-            <Icon name="angle-left" size={26} />
-          </TouchableOpacity>
-        </DiscoverPreview>
-      )}
-      {modalState && previewType !== "discover" && (
+      {modalState && (
         <BookPreview onBackPress={handleModal} book={openedBook} subject={activeSubject}>
           <TouchableOpacity onPress={handleModal}>
             <Icon name="angle-left" size={26} />
