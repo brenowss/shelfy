@@ -10,7 +10,10 @@ class BooksController {
     const repository = getRepository(UsersBooks);
     const { user_id } = req.query;
 
-    const user_books = await repository.find({ where: { user_id } });
+    const user_books = await repository.find({
+      where: { user_id },
+      order: { id: "DESC" },
+    });
     return res.send({ user_books });
   }
 
