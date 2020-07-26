@@ -22,7 +22,6 @@ export const SearchBar = styled.View`
   padding: 6px 15px;
   background-color: #eee;
   border-radius: 22px;
-  margin-bottom: 12px;
 `;
 export const SearchInput = styled.TextInput`
   width: 100%;
@@ -32,6 +31,7 @@ export const SearchInput = styled.TextInput`
 `;
 
 export const CardContainer = styled.View`
+  margin-top: 12px;
   width: 100%;
 `;
 
@@ -111,4 +111,69 @@ export const CardCover = styled.Image`
   position: absolute;
   bottom: 5px;
   right: 5px;
+`;
+
+export const ResultsContainer = styled.View`
+  width: 100%;
+  height: 500px;
+`;
+
+export const ResultSection = styled.View`
+  width: 100%;
+  padding: 12px;
+`;
+
+export const ResultSectionTitle = styled.Text`
+  font-family: GothamBold;
+  font-size: 20px;
+  margin-bottom: 6px;
+`;
+
+export const ResultContainer = styled.TouchableOpacity`
+  width: 100%;
+  height: 80px;
+  border-bottom-color: #77777766;
+  border-bottom-width: 0.2px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const ResultCover = styled.Image`
+  height: 95%;
+  width: 60px;
+  resize-mode: stretch;
+`;
+
+export const ResultTitle = styled.Text`
+  font-family: GothamBold;
+  font-size: 16px;
+`;
+
+export const ResultAuthor = styled.Text`
+  font-family: GothamThin;
+  font-size: 16px;
+`;
+
+export const EmptySearch = styled.Image`
+  width: 60%;
+  height: 40%;
+  resize-mode: contain;
+  position: absolute;
+  align-self: center;
+  top: 12px;
+`;
+
+export const EmptySearchTitle = styled.Text`
+  font-family: GothamBold;
+  font-size: 42px;
+  color: #162335;
+  text-align: center;
+  margin-top: 150px;
+`;
+
+export const EmptySearchText = styled.Text`
+  font-family: GothamMedium;
+  font-size: 20px;
+  color: #162335;
+  text-align: center;
 `;

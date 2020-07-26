@@ -47,6 +47,7 @@ export const BookSubject = styled.TouchableOpacity`
   background-color: #99999922;
   margin-right: 10px;
   border-radius: 8px;
+  max-width: 75%;
 `;
 
 export const Title = styled.Text`

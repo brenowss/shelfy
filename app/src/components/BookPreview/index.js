@@ -96,6 +96,8 @@ const BookPreview = (props) => {
               fontFamily: "GothamThin",
               textTransform: "capitalize",
             }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {props.book.volumeInfo.categories
               ? props.book.volumeInfo.categories[0]

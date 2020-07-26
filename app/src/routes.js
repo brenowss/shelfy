@@ -37,6 +37,7 @@ export default function Routes() {
             alignItems: "center",
             marginBottom: 3,
           },
+          keyboardHidesTabBar: true,
         }}
       >
         <Tab.Screen

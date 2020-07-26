@@ -139,24 +139,24 @@ export default Home = () => {
             showsHorizontalScrollIndicator={false}
           >
             {homeRecommendations ? (
-              homeRecommendations.map((work) => (
+              homeRecommendations.map((book) => (
                 <BookContainer
-                  key={work.id}
+                  key={book.id}
                   onPress={() => {
                     handleModal();
-                    setOpenedBook(work);
+                    setOpenedBook(book);
                   }}
                 >
                   <BookCover
                     source={{
-                      uri: work.volumeInfo.imageLinks.thumbnail,
+                      uri: book.volumeInfo.imageLinks.thumbnail,
                     }}
                   />
                   <BookAuthor>
                     <Icon name="pencil-alt" size={10} />{" "}
-                    {work.volumeInfo.authors[0]}
+                    {book.volumeInfo.authors[0]}
                   </BookAuthor>
-                  <BookTitle>{work.volumeInfo.title}</BookTitle>
+                  <BookTitle>{book.volumeInfo.title}</BookTitle>
                 </BookContainer>
               ))
             ) : (

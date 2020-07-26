@@ -85,3 +85,26 @@ export const BookTitle = styled.Text`
   font-size: 16px;
   text-align: center;
 `;
+
+export const NotFound = styled.Image`
+  width: 80%;
+  height: 40%;
+  resize-mode: contain;
+  position: absolute;
+  align-self: center;
+`;
+
+export const NotFoundTitle = styled.Text`
+  font-family: GothamBold;
+  font-size: 50px;
+  color: #162335;
+  text-align: center;
+  margin-top: 250px;
+`;
+
+export const NotFoundText = styled.Text`
+  font-family: GothamMedium;
+  font-size: 20px;
+  color: #162335;
+  text-align: center;
+`;
