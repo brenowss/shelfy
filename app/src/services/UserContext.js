@@ -52,13 +52,21 @@ const UserProvider = ({ children }) => {
       .post("/users", data)
       .then((res) => {
         res.status === 200 && setSuccess(true);
-        setTimeout(()=> {
+        setTimeout(() => {
           handleLogin(data);
-        }, 600)
+        }, 600);
       })
       .catch(
         (error) => error.response.status === 409 && setExistentEmail(true)
       );
+  }
+
+  async function handleFavoriteChange(book_id) {
+    const oldUser = await AsyncStorage.getItem("user");
+    const parsedUser = JSON.parse(oldUser);
+    parsedUser.favorite_book = book_id;
+    AsyncStorage.setItem("user", JSON.stringify(parsedUser));
+    setActiveUser(parsedUser);
   }
 
   return (
@@ -74,6 +82,7 @@ const UserProvider = ({ children }) => {
         handleLogin,
         handleLogout,
         handleRegister,
+        handleFavoriteChange,
       }}
     >
       {children}

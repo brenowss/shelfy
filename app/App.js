@@ -1,4 +1,5 @@
 import React from "react";
+import { StatusBar } from "react-native";
 import { AppLoading } from "expo";
 
 import { useFonts } from '@use-expo/font';
@@ -19,6 +20,7 @@ export default function App() {
   } else {
   return (
     <UserProvider>
+      <StatusBar backgroundColor={"#fff"} barStyle={'dark-content'} translucent={true} />
       <Routes />
     </UserProvider>
   );

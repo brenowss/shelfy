@@ -63,16 +63,11 @@ const Discover = () => {
   const [activeSubject, setActiveSubject] = useState(null);
   const [searchState, setSearchState] = useState(false);
   const [search, setSearch] = useState("");
-  const [resultBooks, setResultBooks] = useState([]);
+  const [resultBooks, setResultBooks] = useState(null);
+  const [resultAuthors, setResultAuthors] = useState(null);
 
   const route = useRoute();
   const { control } = useForm();
-
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
 
   function handleModal() {
     setModalState(!modalState);
@@ -89,13 +84,18 @@ const Discover = () => {
 
   function handleSearch() {
     search.length > 1
-      ? wait(2000).then(
+      ? Promise.all([
           fetch(
-            `https://www.googleapis.com/books/v1/volumes?maxResults=4&q=${search}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+            `https://www.googleapis.com/books/v1/volumes?fields=items(id,volumeInfo(title,imageLinks,authors,categories,description))&maxResults=4&q=${search}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
           )
             .then((res) => res.json())
-            .then((res) => setResultBooks(res.items))
-        )
+            .then((res) => setResultBooks(res.items)),
+          fetch(
+            `https://www.googleapis.com/books/v1/volumes?fields=items(id,volumeInfo(title,imageLinks,authors,categories,description))&maxResults=4&q=inauthor:${search}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+          )
+            .then((res) => res.json())
+            .then((res) => setResultAuthors(res.items)),
+        ])
       : setResultBooks([]);
   }
 
@@ -126,14 +126,23 @@ const Discover = () => {
 
   useEffect(() => {
     handleSearch();
+
+    if (search.length <= 1) {
+      setResultAuthors(null);
+      setResultBooks(null);
+    }
   }, [search]);
+
+  useEffect(() => {
+    !searchState && setSearch("");
+  }, [searchState]);
 
   useLayoutEffect(() => {
     handleSubject();
   }, [route.params]);
 
   return (
-    <>
+    <Animatable.View animation="fadeIn" duration={400}>
       {!activeSubject ? (
         <Container>
           <ScreenTitle>Discover</ScreenTitle>
@@ -142,6 +151,14 @@ const Discover = () => {
             <TouchableOpacity
               onPress={() => {
                 searchState && setSearchState(false);
+              }}
+              style={{
+                position: "absolute",
+                top: 10,
+
+                height: 30,
+                width: 40,
+                alignItems: "center",
               }}
             >
               <Icon name={searchState ? "arrow-left" : "search"} size={16} />
@@ -154,6 +171,7 @@ const Discover = () => {
                   placeholder="Search"
                   placeholderTextColor="#555"
                   onFocus={() => setSearchState(true)}
+                  onBlur={() => setSearchState(false)}
                   onChangeText={(value) => setSearch(value)}
                   value={search}
                 />
@@ -341,44 +359,91 @@ const Discover = () => {
             </Animatable.View>
           ) : (
             <>
-              {resultBooks.length > 0 ? (
+              {resultBooks || resultAuthors ? (
                 <Animatable.View>
                   <ResultsContainer>
-                    <ResultSection>
-                      <ResultSectionTitle>Books</ResultSectionTitle>
-                      {resultBooks.map((book) => (
-                        <ResultContainer
-                          activeOpacity={0.7}
-                          onPress={() => {
-                            handleModal();
-                            setOpenedBook(book);
-                          }}
-                        >
-                          <ResultCover
-                            source={
-                              book.volumeInfo.imageLinks
-                                ? {
-                                    uri: book.volumeInfo.imageLinks.thumbnail,
-                                  }
-                                : require("../../assets/no-cover.png")
-                            }
-                          />
-                          <View style={{ paddingLeft: 6 }}>
-                            <ResultTitle numberOfLines={1} ellipsizeMode="tail">
-                              {book.volumeInfo.title}
-                            </ResultTitle>
-                            <ResultAuthor
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                            >
-                              {book.volumeInfo.authors
-                                ? book.volumeInfo.authors[0]
-                                : "Unknown Author"}
-                            </ResultAuthor>
-                          </View>
-                        </ResultContainer>
-                      ))}
-                    </ResultSection>
+                    {resultBooks && (
+                      <ResultSection>
+                        <ResultSectionTitle>Books</ResultSectionTitle>
+                        {resultBooks.map((book) => (
+                          <ResultContainer
+                            activeOpacity={0.7}
+                            onPress={() => {
+                              handleModal();
+                              setOpenedBook(book);
+                            }}
+                            key={book.id}
+                          >
+                            <ResultCover
+                              source={
+                                book.volumeInfo.imageLinks
+                                  ? {
+                                      uri: book.volumeInfo.imageLinks.thumbnail,
+                                    }
+                                  : require("../../assets/no-cover.png")
+                              }
+                            />
+                            <View style={{ paddingLeft: 6 }}>
+                              <ResultTitle
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                              >
+                                {book.volumeInfo.title}
+                              </ResultTitle>
+                              <ResultAuthor
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                              >
+                                {book.volumeInfo.authors
+                                  ? book.volumeInfo.authors[0]
+                                  : "Unknown Author"}
+                              </ResultAuthor>
+                            </View>
+                          </ResultContainer>
+                        ))}
+                      </ResultSection>
+                    )}
+                    {resultAuthors && (
+                      <ResultSection>
+                        <ResultSectionTitle>Authors</ResultSectionTitle>
+                        {resultAuthors.map((book) => (
+                          <ResultContainer
+                            activeOpacity={0.7}
+                            onPress={() => {
+                              handleModal();
+                              setOpenedBook(book);
+                            }}
+                            key={book.id}
+                          >
+                            <ResultCover
+                              source={
+                                book.volumeInfo.imageLinks
+                                  ? {
+                                      uri: book.volumeInfo.imageLinks.thumbnail,
+                                    }
+                                  : require("../../assets/no-cover.png")
+                              }
+                            />
+                            <View style={{ paddingLeft: 6 }}>
+                              <ResultTitle
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                              >
+                                {book.volumeInfo.title}
+                              </ResultTitle>
+                              <ResultAuthor
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                              >
+                                {book.volumeInfo.authors
+                                  ? book.volumeInfo.authors[0]
+                                  : "Unknown Author"}
+                              </ResultAuthor>
+                            </View>
+                          </ResultContainer>
+                        ))}
+                      </ResultSection>
+                    )}
                   </ResultsContainer>
                 </Animatable.View>
               ) : (
@@ -425,7 +490,7 @@ const Discover = () => {
           </TouchableOpacity>
         </BookPreview>
       )}
-    </>
+    </Animatable.View>
   );
 };
 

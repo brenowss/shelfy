@@ -31,7 +31,8 @@ export default function Routes() {
             borderTopColor: "#77777766",
             borderTopWidth: 0.2,
           },
-          activeTintColor: "#64B5F6",
+          activeTintColor: "#767CFF",
+          inactiveTintColor: "#A4A4A4",
           labelStyle: {
             fontFamily: "GothamMedium",
             alignItems: "center",

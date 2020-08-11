@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import BookPreview from "../../components/BookPreview";
+import Book from "../../components/Book";
 
 import api from "../../services/api";
 
@@ -20,10 +27,6 @@ import {
   ListContainer,
   RecommendationsList,
   SectionTitle,
-  BookContainer,
-  BookCover,
-  BookAuthor,
-  BookTitle,
   ProgressContainer,
   ProgressTitle,
   ProgressPercentage,
@@ -43,7 +46,11 @@ export default Home = () => {
   const [modalState, setModalState] = useState(false);
   const [subjects, setSubjects] = useState(null);
   const [moreFromAuthor1, setmoreFromAuthor1] = useState(null);
-  const [moreFromSubject1, setmoreFromSubject1] = useState(null);
+  const [recentlySeen, setRecentlySeen] = useState([]);
+  const [recentlySeenList, setRecentlySeenList] = useState(null);
+  const [followedSubjects, setFollowedSubjects] = useState(null);
+  const [moreFromSubjects, setMoreFromSubjects] = useState([]);
+  const [subjectLoaded, setSubjectLoaded] = useState(false);
 
   const { activeUser } = useContext(Context);
 
@@ -53,7 +60,7 @@ export default Home = () => {
 
   function getRecommendations() {
     fetch(
-      `https://www.googleapis.com/books/v1/volumes?maxResults=8&q=flowers+subject:romance&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+      `https://www.googleapis.com/books/v1/volumes?fields=items(id,volumeInfo(title,imageLinks,authors,categories,description))&maxResults=8&q=flowers+subject:romance&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
     )
       .then((res) => res.json())
       .then((res) => {
@@ -69,23 +76,29 @@ export default Home = () => {
       });
   }
 
-  function getMoreFromAuthors() {
-    fetch(
-      `https://www.googleapis.com/books/v1/volumes?maxResults=8&q=inauthor:${recentAuthor1}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        setmoreFromAuthor1(res.items);
-      });
+  function getRecentlySeenList() {
+    api
+      .get(`/recently_seen/?user_id=${activeUser.id}`)
+      .then(({ data: { recently_seen } }) =>
+        setRecentlySeenList(recently_seen)
+      );
   }
 
-  function getMoreFromSubjects() {
-    fetch(
-      `https://www.googleapis.com/books/v1/volumes?maxResults=8&q=subject:${recentSubject1}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        setmoreFromSubject1(res.items);
+  function getRecentlySeen() {
+    recentlySeenList &&
+      recentlySeenList.map((book) => {
+        fetch(
+          `https://www.googleapis.com/books/v1/volumes/${book.book_id}?key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}&fields=id,volumeInfo(title,imageLinks,authors,categories,description)`
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            if (recentlySeen.some((book) => book.id === res.id)) {
+              return;
+            } else {
+              setRecentlySeen((prevState) => [...prevState, res]);
+            }
+          })
+          .catch((err) => console.log(err));
       });
   }
 
@@ -97,20 +110,45 @@ export default Home = () => {
     navigation.navigate("Discover", { subject });
   }
 
+  function getFollowedSubjects() {
+    api
+      .get(`/user_subjects/list?user_id=${activeUser.id}`)
+      .then(({ data: { user_subjects } }) =>
+        setFollowedSubjects(user_subjects)
+      );
+  }
+
+  function getMoreFromSubjects() {
+    followedSubjects &&
+      followedSubjects.map(({ subject }) => {
+        fetch(
+          `https://www.googleapis.com/books/v1/volumes?maxResults=8&q=subject:${subject}&key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+        )
+          .then((res) => res.json())
+          .then(({ items }) =>
+            setMoreFromSubjects((prevState) => [...prevState, items])
+          );
+      });
+  }
+
   const isDay = () => {
     let hour = new Date().getHours();
     if (hour >= 7 && hour < 12) {
       setGreeting("Good morning,");
-    }
-    else if (hour >= 12 && hour < 18) {
+    } else if (hour >= 12 && hour < 18) {
       setGreeting("Welcome,");
-    }
-    else if (hour >= 18 && hour < 24) {
+    } else if (hour >= 18 && hour < 24) {
       setGreeting("Good night,");
     } else {
       setGreeting("Hello,");
     }
   };
+
+  const handleBook = (book) => {
+    handleModal();
+    setOpenedBook(book);
+  };
+
   useEffect(() => {
     isDay();
     getRecommendations();
@@ -118,9 +156,22 @@ export default Home = () => {
     api.get("/subjects").then((res) => {
       setSubjects(res.data.subjects);
     });
-    getMoreFromAuthors();
-    getMoreFromSubjects();
   }, []);
+
+  useEffect(() => {
+    getMoreFromSubjects();
+  }, [followedSubjects]);
+
+  if (activeUser) {
+    useEffect(() => {
+      getRecentlySeenList();
+      getFollowedSubjects();
+    }, [activeUser.id]);
+
+    useEffect(() => {
+      getRecentlySeen();
+    }, [recentlySeenList]);
+  }
 
   return (
     <>
@@ -140,30 +191,39 @@ export default Home = () => {
           >
             {homeRecommendations ? (
               homeRecommendations.map((book) => (
-                <BookContainer
+                <Book
                   key={book.id}
+                  book={book}
                   onPress={() => {
-                    handleModal();
-                    setOpenedBook(book);
+                    handleBook(book);
                   }}
-                >
-                  <BookCover
-                    source={{
-                      uri: book.volumeInfo.imageLinks.thumbnail,
-                    }}
-                  />
-                  <BookAuthor>
-                    <Icon name="pencil-alt" size={10} />{" "}
-                    {book.volumeInfo.authors[0]}
-                  </BookAuthor>
-                  <BookTitle>{book.volumeInfo.title}</BookTitle>
-                </BookContainer>
+                />
               ))
             ) : (
               <ActivityIndicator size="large" color="#2FA749" />
             )}
           </RecommendationsList>
         </ListContainer>
+        {recentlySeen && (
+          <ListContainer>
+            <SectionTitle>Recently Seen</SectionTitle>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              {recentlySeen.map((book) => (
+                <Book
+                  key={book.id}
+                  book={book}
+                  onPress={() => {
+                    handleModal();
+                    setOpenedBook(book);
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </ListContainer>
+        )}
         <ListContainer>
           <SectionTitle>Popular Subjects</SectionTitle>
           <SubjectsContainer
@@ -188,74 +248,39 @@ export default Home = () => {
             )}
           </SubjectsContainer>
         </ListContainer>
-        <ListContainer>
-          {moreFromAuthor1 ? (
-            <>
-              <SectionTitle>More from {recentAuthor1}</SectionTitle>
-              <RecommendationsList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {moreFromAuthor1.map((work) => (
-                  <BookContainer
-                    key={work.id}
-                    onPress={() => {
-                      handleModal();
-                      setOpenedBook(work);
-                    }}
-                  >
-                    <BookCover
-                      source={{
-                        uri: work.volumeInfo.imageLinks.thumbnail,
+        {followedSubjects &&
+        moreFromSubjects &&
+        moreFromSubjects.length === followedSubjects.length ? (
+          <>
+            {followedSubjects.map((subject, i) => (
+              <ListContainer key={i}>
+                <SectionTitle>
+                  More from{" "}
+                  <Text style={{ textTransform: "capitalize" }}>
+                    {followedSubjects[i].subject}
+                  </Text>
+                </SectionTitle>
+                <RecommendationsList
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {moreFromSubjects[i].map((book) => (
+                    <Book
+                      key={book.id}
+                      book={book}
+                      onPress={() => {
+                        handleModal();
+                        setOpenedBook(book);
                       }}
                     />
-                    <BookAuthor>
-                      <Icon name="pencil-alt" size={10} />{" "}
-                      {work.volumeInfo.authors[0]}
-                    </BookAuthor>
-                    <BookTitle>{work.volumeInfo.title}</BookTitle>
-                  </BookContainer>
-                ))}
-              </RecommendationsList>
-            </>
-          ) : (
-            <ActivityIndicator size="large" color="#2FA749" />
-          )}
-        </ListContainer>
-        <ListContainer>
-          {moreFromSubject1 ? (
-            <>
-              <SectionTitle>More from {recentSubject1}</SectionTitle>
-              <RecommendationsList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {moreFromSubject1.map((work) => (
-                  <BookContainer
-                    key={work.id}
-                    onPress={() => {
-                      handleModal();
-                      setOpenedBook(work);
-                    }}
-                  >
-                    <BookCover
-                      source={{
-                        uri: work.volumeInfo.imageLinks.thumbnail,
-                      }}
-                    />
-                    <BookAuthor>
-                      <Icon name="pencil-alt" size={10} />{" "}
-                      {work.volumeInfo.authors[0]}
-                    </BookAuthor>
-                    <BookTitle>{work.volumeInfo.title}</BookTitle>
-                  </BookContainer>
-                ))}
-              </RecommendationsList>
-            </>
-          ) : (
-            <ActivityIndicator size="large" color="#2FA749" />
-          )}
-        </ListContainer>
+                  ))}
+                </RecommendationsList>
+              </ListContainer>
+            ))}
+          </>
+        ) : (
+          <ActivityIndicator size="large" color="#2FA749" />
+        )}
         <View style={{ height: 45, width: "100%" }} />
       </Container>
       {modalState && (

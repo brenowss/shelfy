@@ -2,9 +2,9 @@ import styled from "styled-components/native";
 import Modal from "react-native-modal";
 
 export const Container = styled(Modal)`
+  padding: 20px;
   margin: 0;
   margin-top: 20%;
-  padding-top: 20px;
   background-color: #fff;
   width: 100%;
   border-top-left-radius: 26px;
@@ -50,15 +50,6 @@ export const BookSubject = styled.TouchableOpacity`
   max-width: 75%;
 `;
 
-export const BookDescription = styled.ScrollView`
-`;
-
-export const ReadMore = styled.TouchableOpacity`
-  position: relative;
-  align-items: center;
-  width: 100%;
-`;
-
 export const Title = styled.Text`
   font-family: GothamBold;
   font-size: 20px;
@@ -66,53 +57,19 @@ export const Title = styled.Text`
   margin: 6px 0;
 `;
 
-export const RecommendationsContainer = styled.View`
-  width: 100%;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 0 12px;
-  align-items: center;
-  margin-bottom: 12px;
-`;
-
-export const RecommendedBookContainer = styled.TouchableOpacity`
-  width: 120px;
-  margin-right: 7px;
-  margin-bottom: 10px;
-  border-radius: 12px;
-  align-items: center;
-  height: 230px;
-`;
-
-export const RecommendedBookCover = styled.Image`
-  height: 170px;
-  width: 130px;
-  border-radius: 2px;
-  resize-mode: stretch;
-`;
-
-export const RecommendedBookAuthor = styled.Text`
-  color: #666;
-  margin: 5px 0;
-  font-family: GothamLight;
-  font-size: 12px;
-`;
-
-export const RecommendedBookTitle = styled.Text`
-  font-family: GothamBold;
-  font-size: 16px;
-  text-align: center;
+export const BookDescription = styled.ScrollView`
+  height: 220px;
+  margin-bottom: 15px;
 `;
 
 export const Actions = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  left: 20px;
   align-items: center;
-  position: relative;
+  position: absolute;
   width: 100%;
-  bottom: 6px;
-  padding: 0 20px;
+  bottom: 0;
 `;
 
 export const AddShelf = styled.TouchableOpacity`

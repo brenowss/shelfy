@@ -19,7 +19,7 @@ export const SearchBar = styled.View`
   width: 100%;
   flex-direction: row;
   align-items: center;
-  padding: 6px 15px;
+  padding: 6px 22px;
   background-color: #eee;
   border-radius: 22px;
 `;
@@ -113,7 +113,7 @@ export const CardCover = styled.Image`
   right: 5px;
 `;
 
-export const ResultsContainer = styled.View`
+export const ResultsContainer = styled.ScrollView`
   width: 100%;
   height: 500px;
 `;

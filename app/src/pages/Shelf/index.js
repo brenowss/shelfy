@@ -129,7 +129,7 @@ const Shelf = () => {
     favoriteBookList &&
       favoriteBookList.map((book) => {
         fetch(
-          `https://www.googleapis.com/books/v1/volumes/${book.book_id}?key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}`
+          `https://www.googleapis.com/books/v1/volumes/${book.book_id}?key=${Expo.Constants.manifest.extra.BOOKS_API_KEY}&fields=id,volumeInfo(title,imageLinks,authors,categories,description)`
         )
           .then((res) => res.json())
           .then((res) => {
@@ -148,7 +148,7 @@ const Shelf = () => {
   }
 
   return (
-    <>
+    <Animatable.View animation="fadeIn" duration={400}>
       <Container
         refreshControl={
           <RefreshControl
@@ -380,7 +380,7 @@ const Shelf = () => {
           </TouchableOpacity>
         </BookPreview>
       )}
-    </>
+    </Animatable.View>
   );
 };
 
