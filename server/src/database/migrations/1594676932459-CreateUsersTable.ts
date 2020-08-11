@@ -27,6 +27,12 @@ export class CreateUsersTable1594676932459 implements MigrationInterface {
             length: "25"
           },
           {
+            name: "favorite_book",
+            type: "varchar",
+            length: "15",
+            isNullable: true
+          },
+          {
             name: "password",
             type: "varchar",
           },

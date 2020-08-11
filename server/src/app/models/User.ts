@@ -20,6 +20,9 @@ class User {
   username: string;
 
   @Column()
+  favorite_book: string;
+
+  @Column()
   password: string;
 
   @BeforeInsert()

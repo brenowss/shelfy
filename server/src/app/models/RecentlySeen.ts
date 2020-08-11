@@ -1,15 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("users_main_books")
-class UsersMainBooks {
+@Entity("recently_seen")
+class RecentlySeen {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
   @Column()
-  main_book_id: string;
+  book_id: string;
 
   @Column()
   user_id: string;
 }
 
-export default UsersMainBooks;
+export default RecentlySeen;
